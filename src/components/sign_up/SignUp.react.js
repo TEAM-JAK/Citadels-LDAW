@@ -13,7 +13,6 @@ function SignUpForm() {
   function onSubmit(event) {
     event.preventDefault();
     firebase.doCreateUserWithEmailAndPassword(email, password);
-    console.log(firebase);
   }
 
   function handleNameChange(event) {
