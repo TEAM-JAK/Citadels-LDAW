@@ -1,16 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-
-import * as ROUTES from '../../constants/routes';
 import {useContext, useState} from 'react';
-import Firebase, {FirebaseContext} from '../../components/Firebase';
-
-const SignUpPage = () => (
-  <div>
-    <h1>SignUp</h1>
-    <SignUpForm />
-  </div>
-);
+import FirebaseContext from 'components/firebase/FirebaseContext.react';
 
 function SignUpForm() {
   const firebase = useContext(FirebaseContext);
@@ -25,8 +15,6 @@ function SignUpForm() {
     firebase.doCreateUserWithEmailAndPassword(email, password);
     console.log(firebase);
   }
-
-  function onChange(event) {}
 
   function handleNameChange(event) {
     setName(event.target.value);
@@ -71,12 +59,13 @@ function SignUpForm() {
   );
 }
 
-const SignUpLink = () => (
-  <p>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
-);
+function SignUp() {
+  return (
+    <div>
+      <h1>SignUp</h1>
+      <SignUpForm />
+    </div>
+  );
+}
 
-export default SignUpPage;
-
-export {SignUpForm, SignUpLink};
+export default SignUp;
