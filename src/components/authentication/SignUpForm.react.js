@@ -2,6 +2,9 @@ import React from 'react';
 import {useContext, useState} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
 import {useHistory} from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import {makeStyles} from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
 import * as ROUTES from 'constants/routes';
 
@@ -13,10 +16,27 @@ const INITIAL_STATE = {
   error: null,
 };
 
+const useStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  field: {
+    marginTop: 16,
+  },
+  title: {
+    marginBottom: 24,
+  },
+});
+
 function SignUpForm() {
   const firebase = useContext(FirebaseContext);
   const history = useHistory();
   const [formState, setFormState] = useState(INITIAL_STATE);
+  const classes = useStyles();
 
   function onSubmit(event) {
     event.preventDefault();
@@ -49,62 +69,17 @@ function SignUpForm() {
     formState.username === '';
 
   return (
-    <form onSubmit={onSubmit}>
-      <label>
-        Username:
-        <input
-          name="username"
-          value={formState.username}
-          onChange={onChange}
-          type="text"
-          placeholder="Full Name"
-        />
-      </label>
-      <label>
-        Email:
-        <input
-          name="email"
-          value={formState.email}
-          onChange={onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-      </label>
-      <label>
-        Password One:
-        <input
-          name="passwordOne"
-          value={formState.passwordOne}
-          onChange={onChange}
-          type="password"
-          placeholder="Password"
-        />
-      </label>
-      <label>
-        Password Two:
-        <input
-          name="passwordTwo"
-          value={formState.passwordTwo}
-          onChange={onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-      </label>
-      <button disabled={isInvalid} type="submit">
+    <div className={classes.root}>
+      <Typography className={classes.title} variant="h3" align="center" gutterBottom>
         Sign Up
-      </button>
-      {formState.error && <p>{formState.error.message}</p>}
-    </form>
-  );
-}
-
-function SignUp() {
-  return (
-    <div>
-      <h1>SignUp</h1>
-      <SignUpForm />
+      </Typography>
+      <form className={classes.form} onSubmit={onSubmit}>
+        <TextField className={classes.field} label="Filled" variant="filled" />
+        <TextField className={classes.field} label="Filled" variant="filled" />
+        {formState.error && <Typography>{formState.error.message}</Typography>}
+      </form>
     </div>
   );
 }
 
-export default SignUp;
+export default SignUpForm;
