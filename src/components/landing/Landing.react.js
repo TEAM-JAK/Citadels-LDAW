@@ -26,15 +26,6 @@ function Landing() {
 
   return (
     <div>
-      {/* <Link to={ROUTES.AUTHENTICATION}>
-        <button>Go to Authentication</button>
-      </Link> */}
-      <Link to={ROUTES.SIGN_IN}>
-        <button>Go to Sign In Form</button>
-      </Link>
-      <Link to={ROUTES.SIGN_UP}>
-        <button>Go to Sign Up</button>
-      </Link>
       <button onClick={handleClick}>Landing Page</button>
       <ul>
         {items.map((item) => (
