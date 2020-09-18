@@ -1,112 +1,70 @@
-import React, {useState} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React from 'react';
+import {useContext, useState} from 'react';
+import FirebaseContext from 'components/firebase/FirebaseContext.react';
 
-import {withFirebase} from '../Firebase';
-import * as ROUTES from '../../constants/routes';
+function SignUpForm() {
+  const firebase = useContext(FirebaseContext);
 
-const SignUpPage = () => (
-  <div>
-    <h1>SignUp</h1>
-    <SignUpForm />
-  </div>
-);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmationPassword, setConfirmationPassword] = useState('');
 
-const INITIAL_STATE = {
-  username: '',
-  email: '',
-  passwordOne: '',
-  passwordTwo: '',
-  error: null,
-};
-
-function SignUpFormBase(props) {
-  const [formState, setFormState] = useState(INITIAL_STATE);
-
-  const onSubmit = (event) => {
-    const {username, email, passwordOne} = formState;
-
-    props.firebase
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then((authUser) => {
-        // Create a user in your Firebase realtime database
-        props.firebase
-          .user(authUser.user.uid)
-          .set({
-            username,
-            email,
-          })
-          .then(() => {
-            setFormState(...INITIAL_STATE);
-            props.history.push(ROUTES.HOME);
-          })
-          .catch((error) => {
-            setFormState({...formState, [formState.error]: error});
-          });
-      })
-      .catch((error) => {
-        setFormState({...formState, [formState.error]: error});
-      });
-
+  function onSubmit(event) {
     event.preventDefault();
-  };
+    firebase.doCreateUserWithEmailAndPassword(email, password);
+  }
 
-  const onChange = (event) => {
-    setFormState({...formState, [event.target.name]: event.target.value});
-  };
+  function handleNameChange(event) {
+    setName(event.target.value);
+  }
 
-  const isInvalid =
-    formState.passwordOne !== formState.passwordTwo ||
-    formState.passwordOne === '' ||
-    formState.email === '' ||
-    formState.username === '';
+  function handleEmailChange(event) {
+    setEmail(event.target.value);
+  }
+
+  function handlePasswordChange(event) {
+    setPassword(event.target.value);
+  }
+
+  function handleConfirmationPasswordChange(event) {
+    setConfirmationPassword(event.target.value);
+  }
 
   return (
     <form onSubmit={onSubmit}>
-      <input
-        name="username"
-        value={formState.username}
-        onChange={onChange}
-        type="text"
-        placeholder="Full Name"
-      />
-      <input
-        name="email"
-        value={formState.email}
-        onChange={onChange}
-        type="text"
-        placeholder="Email Address"
-      />
-      <input
-        name="passwordOne"
-        value={formState.passwordOne}
-        onChange={onChange}
-        type="password"
-        placeholder="Password"
-      />
-      <input
-        name="passwordTwo"
-        value={formState.passwordTwo}
-        onChange={onChange}
-        type="password"
-        placeholder="Confirm Password"
-      />
-      <button disabled={isInvalid} type="submit">
-        Sign Up
-      </button>
-
-      {formState.error && <p>{formState.error.message}</p>}
+      <label>
+        Name:
+        <input type="text" value={name} onChange={handleNameChange} />{' '}
+      </label>
+      <label>
+        Email:
+        <input type="email" value={email} onChange={handleEmailChange} />{' '}
+      </label>
+      <label>
+        Name:
+        <input type="password" value={password} onChange={handlePasswordChange} />{' '}
+      </label>
+      <label>
+        Name:
+        <input
+          type="password"
+          value={confirmationPassword}
+          onChange={handleConfirmationPasswordChange}
+        />{' '}
+      </label>
+      <input type="submit" value="Submit" />
     </form>
   );
 }
 
-const SignUpLink = () => (
-  <p>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
-);
-
-const SignUpForm = withRouter(withFirebase(SignUpFormBase));
-
-export default SignUpPage;
+function SignUp() {
+  return (
+    <div>
+      <h1>SignUp</h1>
+      <SignUpForm />
+    </div>
+  );
+}
 
 export default SignUp;
