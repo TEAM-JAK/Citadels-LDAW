@@ -8,7 +8,7 @@ import * as ROUTES from 'constants/routes';
 
 import {Link} from 'react-router-dom';
 
-function Home() {
+function Landing() {
   const socket = useSocketClient();
   const [errors, data] = useSocketSubscription(['TEST']);
   const [items, setItems] = useState([]);
@@ -26,9 +26,23 @@ function Home() {
 
   return (
     <div>
-      <p>I'm at home</p>
+      {/* <Link to={ROUTES.AUTHENTICATION}>
+        <button>Go to Authentication</button>
+      </Link> */}
+      <Link to={ROUTES.SIGN_IN}>
+        <button>Go to Sign In Form</button>
+      </Link>
+      <Link to={ROUTES.SIGN_UP}>
+        <button>Go to Sign Up</button>
+      </Link>
+      <button onClick={handleClick}>Landing Page</button>
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default Home;
+export default Landing;
