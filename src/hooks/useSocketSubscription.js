@@ -9,9 +9,7 @@ function useSocketSubscription(types) {
 
   useEffect(() => {
     function subscribe(payload) {
-      console.log(payload);
       const payloadParsed = JSON.parse(payload);
-      console.log(payloadParsed);
       if (types.includes(payloadParsed.type)) {
         setData(payloadParsed.data);
       }
@@ -22,7 +20,7 @@ function useSocketSubscription(types) {
     return function () {
       socket.off('message', subscribe);
     };
-  }, []);
+  }, [setData]);
 
   return [errors, data];
 }

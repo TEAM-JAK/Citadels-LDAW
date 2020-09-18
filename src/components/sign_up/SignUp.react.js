@@ -1,10 +1,13 @@
 import React from 'react';
 import {useContext, useState} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
+import {useHistory} from 'react-router-dom';
+
+import * as ROUTES from 'constants/routes';
 
 function SignUpForm() {
   const firebase = useContext(FirebaseContext);
-
+  const history = useHistory();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +15,9 @@ function SignUpForm() {
 
   function onSubmit(event) {
     event.preventDefault();
-    firebase.doCreateUserWithEmailAndPassword(email, password);
+    firebase
+      .doCreateUserWithEmailAndPassword(email, password)
+      .then(() => history.replace(ROUTES.HOME));
   }
 
   function handleNameChange(event) {
