@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "clsx": "^1.1.1",
     "firebase": "^7.20.0",
+    "focus-trap-react": "^8.0.0",
     "postcss-normalize": "^9.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
