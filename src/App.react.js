@@ -6,6 +6,7 @@ import Landing from 'components/landing/Landing.react';
 import SignUp from 'components/sign_up/SignUp.react';
 import SignIn from 'components/sign_in/SignIn.react';
 import Authentication from 'components/authentication/Authentication.react';
+import Home from 'components/home/Home.react';
 
 import AuthRenderer from 'components/shared/AuthRenderer.react';
 import * as ROUTES from 'constants/routes';
@@ -16,6 +17,11 @@ const App = () => (
       <Route exact path={ROUTES.LANDING}>
         <AuthRenderer fallback={<p>Loading...</p>}>
           <Landing />
+        </AuthRenderer>
+      </Route>
+      <Route exact path={ROUTES.HOME}>
+        <AuthRenderer fallback={<p>Loading...</p>}>
+          <Home />
         </AuthRenderer>
       </Route>
       <Route path={ROUTES.AUTHENTICATION}>

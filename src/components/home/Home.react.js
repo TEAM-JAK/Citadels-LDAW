@@ -1,32 +1,18 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-
-import useSocketClient from 'hooks/useSocketClient';
-import useSocketSubscription from 'hooks/useSocketSubscription';
-
-import * as ROUTES from 'constants/routes';
-
-import {Link} from 'react-router-dom';
+import {ModalContainer} from '../modalContainer/ModalContainer.react'
 
 function Home() {
-  const socket = useSocketClient();
-  const [errors, data] = useSocketSubscription(['TEST']);
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    if (data != null) {
-      setItems([...items, data]);
-    }
-  }, [data]);
-
-  function handleClick() {
-    // TODO: Make it so only message is used
-    socket.emit('message', 'hi');
+  
+  const triggerText = 'Create Game';
+  const onSubmit = (event) => {
+    event.preventDefault(event);
+    console.log(event.target.name.value);
   }
 
   return (
     <div>
-      <p>I'm at home</p>
+      <h1>This is HOME</h1>
+      <ModalContainer triggerText={triggerText} onSubmit={onSubmit} />
     </div>
   );
 }
