@@ -1,37 +1,28 @@
 import React from 'react';
 import {useContext, useState} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 
 import * as ROUTES from 'constants/routes';
 
 const INITIAL_STATE = {
-  username: '',
   email: '',
-  passwordOne: '',
-  passwordTwo: '',
+  password: '',
   error: null,
 };
 
-function SignUpForm() {
+function SignInForm() {
   const firebase = useContext(FirebaseContext);
   const history = useHistory();
   const [formState, setFormState] = useState(INITIAL_STATE);
 
   function onSubmit(event) {
     event.preventDefault();
-    const {username, email, passwordOne} = formState;
+    const {username, email, password} = formState;
 
     firebase
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then((authUser) =>
-        firebase.db.ref(`users/${authUser.user.uid}`).set({
-          username,
-          email,
-        }),
-      )
+      .doSignInWithEmailAndPassword(email, password)
       .then(() => {
-        console.log('here');
         setFormState(...INITIAL_STATE);
         history.replace(ROUTES.HOME);
       })
@@ -42,24 +33,10 @@ function SignUpForm() {
     setFormState({...formState, [event.target.name]: event.target.value});
   }
 
-  const isInvalid =
-    formState.passwordOne !== formState.passwordTwo ||
-    formState.passwordOne === '' ||
-    formState.email === '' ||
-    formState.username === '';
+  const isInvalid = formState.password === '' || formState.email === '';
 
   return (
     <form onSubmit={onSubmit}>
-      <label>
-        Username:
-        <input
-          name="username"
-          value={formState.username}
-          onChange={onChange}
-          type="text"
-          placeholder="Full Name"
-        />
-      </label>
       <label>
         Email:
         <input
@@ -71,40 +48,33 @@ function SignUpForm() {
         />
       </label>
       <label>
-        Password One:
+        Password:
         <input
-          name="passwordOne"
-          value={formState.passwordOne}
+          name="password"
+          value={formState.password}
           onChange={onChange}
           type="password"
           placeholder="Password"
         />
       </label>
-      <label>
-        Password Two:
-        <input
-          name="passwordTwo"
-          value={formState.passwordTwo}
-          onChange={onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-      </label>
       <button disabled={isInvalid} type="submit">
-        Sign Up
+        Sign In
       </button>
       {formState.error && <p>{formState.error.message}</p>}
     </form>
   );
 }
 
-function SignUp() {
+function SignIn() {
   return (
     <div>
-      <h1>SignUp</h1>
-      <SignUpForm />
+      <h1>SignIn</h1>
+      <SignInForm />
+      <p>
+        Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+      </p>
     </div>
   );
 }
 
-export default SignUp;
+export default SignIn;

@@ -14,7 +14,7 @@ function AuthRenderer({children, fallback}) {
   useEffect(() => {
     const listener = firebase.auth.onAuthStateChanged((logged) => {
       if (logged === null) {
-        history.push(ROUTES.SIGN_UP);
+        history.push(ROUTES.SIGN_IN);
         return;
       }
       setUserState('LOGGED');
