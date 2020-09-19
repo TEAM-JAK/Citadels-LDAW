@@ -1,4 +1,3 @@
-export const LANDING = '/';
 export const AUTHENTICATION = '/auth';
 export const HOME = '/home';
 export const SIGN_UP = '/signup';
