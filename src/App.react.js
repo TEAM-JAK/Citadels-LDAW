@@ -2,7 +2,6 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 // import PrivateRoute from 'components/shared/PrivateRoute.react';
-import Landing from 'components/landing/Landing.react';
 import Home from 'components/home/Home.react';
 import Authentication from 'components/authentication/Authentication.react';
 
@@ -12,11 +11,6 @@ import * as ROUTES from 'constants/routes';
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path={ROUTES.HOME}>
-        <AuthRenderer fallback={<p>Loading...</p>}>
-          <Home />
-        </AuthRenderer>
-      </Route>
       <Route exact path={ROUTES.HOME}>
         <AuthRenderer fallback={<p>Loading...</p>}>
           <Home />
