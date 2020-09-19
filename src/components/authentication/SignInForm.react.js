@@ -15,6 +15,10 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import validate from 'validate.js';
+import {CONSTRAINTS} from 'utils/validator';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faFacebookF} from '@fortawesome/free-brands-svg-icons';
 
 import * as ROUTES from 'constants/routes';
 
@@ -53,6 +57,21 @@ const useStyles = makeStyles({
     width: '100%',
     minHeight: 36,
   },
+  socialContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  social: {
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40,
+    cursor: 'pointer',
+  },
 });
 
 function SignInForm() {
@@ -63,9 +82,38 @@ function SignInForm() {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
 
+  function onFacebookLogin() {
+    firebase.auth
+      .signInWithPopup(firebase.facebookProvider)
+      .then((result) => {
+        // The signed-in user info.
+        const user = result.user;
+
+        return firebase.firestore.collection('Users').doc(user.uid).set({
+          username: user.displayName,
+          email: user.email,
+        });
+      })
+      .then(() => {
+        setFormState({...INITIAL_STATE});
+        history.replace(ROUTES.HOME);
+      })
+      .catch((error) => {
+        // TODO: Handle errors
+        console.log(error);
+      });
+  }
+
   function onSubmit(event) {
     event.preventDefault();
     const {email, password} = formState;
+
+    const validation = validate({email, password}, CONSTRAINTS.SIGN_IN);
+
+    if (validation) {
+      // TODO: Show validation errors
+      return;
+    }
 
     setLoading(true);
 
@@ -93,7 +141,12 @@ function SignInForm() {
       <Typography className={classes.title} variant="h3" align="center" gutterBottom>
         Sign In
       </Typography>
-      <form className={classes.form} onSubmit={onSubmit}>
+      <div className={classes.socialContainer}>
+        <button onClick={onFacebookLogin} className={classes.social}>
+          <FontAwesomeIcon icon={faFacebookF} />
+        </button>
+      </div>
+      <form noValidate className={classes.form} onSubmit={onSubmit}>
         <TextField
           type="email"
           name="email"

@@ -51,8 +51,7 @@ function SignUpForm() {
         }),
       )
       .then(() => {
-        console.log('here');
-        setFormState(...INITIAL_STATE);
+        setFormState({...INITIAL_STATE});
         history.replace(ROUTES.HOME);
       })
       .catch((error) => setFormState({...formState, [formState.error]: error}));
