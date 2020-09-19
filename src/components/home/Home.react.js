@@ -1,18 +1,13 @@
 import React from 'react';
-import {ModalContainer} from '../modalContainer/ModalContainer.react'
+import FormDialogButton from 'components/formDialogButton/FormDialogButton.react'
 
 function Home() {
   
-  const triggerText = 'Create Game';
-  const onSubmit = (event) => {
-    event.preventDefault(event);
-    console.log(event.target.name.value);
-  }
 
   return (
     <div>
       <h1>This is HOME</h1>
-      <ModalContainer triggerText={triggerText} onSubmit={onSubmit} />
+      <FormDialogButton/>
     </div>
   );
 }
