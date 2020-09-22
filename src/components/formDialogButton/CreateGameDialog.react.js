@@ -29,7 +29,12 @@ function CreateGameDialog(props) {
     const firebase = useContext(FirebaseContext);
 
     const handleFormOnSubmit = (event) => {
-        console.log(event);
+        firebase.firestore.collection('Room').add({
+            ...formState,
+            isPrivateGame,
+        }).then(()=> {
+            props.onClose();
+        });
     };
 
     const handleChange = (event) => {
