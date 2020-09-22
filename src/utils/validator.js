@@ -21,4 +21,7 @@ export const CONSTRAINTS = {
       equality: 'password',
     },
   },
+  CREATE_GAME: {
+    //to implement
+  }
 };
