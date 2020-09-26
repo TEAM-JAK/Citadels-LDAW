@@ -4,7 +4,7 @@ class SocketIOClient {
   // Maybe pass the port here
   constructor() {
     // Allow only ws protocol
-    this.socket = io('http://localhost:4002', {transports: ['websocket']});
+    this.socket = io('http://localhost:4001', {transports: ['websocket']});
   }
 }
 

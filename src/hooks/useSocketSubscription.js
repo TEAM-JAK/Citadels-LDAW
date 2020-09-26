@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import useSocketClient from 'hooks/useSocketClient';
 
 function useSocketSubscription(types) {
+  // {type: string, data: Any, errors: Any}
   const socket = useSocketClient();
 
   const [data, setData] = useState(null);
