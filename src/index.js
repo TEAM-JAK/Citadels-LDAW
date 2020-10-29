@@ -13,6 +13,7 @@ import SocketIOClient from 'utils/SocketIOClient';
 // Import the wrapper component, and the the creator function
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 
+import GameApp from 'components/game/GameApp.react';
 // Create a new theme using Nunito
 const theme = createMuiTheme({
   typography: {
@@ -22,11 +23,12 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <FirebaseContext.Provider value={new Firebase()}>
-    <SocketContext.Provider value={new SocketIOClient()}>
+    {/* <SocketContext.Provider value={new SocketIOClient()}> */}
       <MuiThemeProvider theme={theme}>
-        <App />
+        {/* <App /> */}
+        <GameApp />
       </MuiThemeProvider>
-    </SocketContext.Provider>
+    {/* </SocketContext.Provider> */}
   </FirebaseContext.Provider>,
   document.getElementById('root'),
 );
