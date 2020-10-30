@@ -14,35 +14,35 @@
 //   power : funct
 // }
 
-export function createDeckOfDistricts() {
+export function CreateDeckOfDistricts() {
   const deck = []
   // Will need to keep a file or something with the distric information.
   for (let index = 0; index < 68; index++) {
-    deck.push(createDistrictCard("Name: "+index, 3, 3));
+    deck.push(CreateDistrictCard("Name: "+index, 3, 3));
   }
   return deck
 }
 
-export function createDeckOfCharacters() {
+export function CreateDeckOfCharacters() {
   const deck = [
-    {order: 0, name: "Assasin"},
-    {order: 1, name: "Thief"},
-    {order: 2, name: "Magician"},
-    {order: 3, name: "King"},
-    {order: 4, name: "Bishop"},
-    {order: 5, name: "Merchant"},
-    {order: 6, name: "Architect"},
-    {order: 7, name: "Warlord"},
+    {order: 1, name: "Assasin"},
+    {order: 2, name: "Thief"},
+    {order: 3, name: "Magician"},
+    {order: 4, name: "King"},
+    {order: 5, name: "Bishop"},
+    {order: 6, name: "Merchant"},
+    {order: 7, name: "Architect"},
+    {order: 8, name: "Warlord"},
   ]
   return deck
 }
 
-function createDistrictCard(name, cost, type) {
+function CreateDistrictCard(name, cost, type) {
   return {name, cost, type}
   //not sure how to do specialPower which should be a function.
 }
 
-function createCharacterCard (order, name) {
+function CreateCharacterCard (order, name) {
   return {order, name}
   //not sure how to do specialPower which should be a function.
 }
