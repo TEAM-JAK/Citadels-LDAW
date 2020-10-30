@@ -1,7 +1,7 @@
 import React from 'react';
 import {TableCell, TableRow} from '@material-ui/core';
 
-function Room(props) {
+function RoomRow(props) {
   return (
     <TableRow>
       <TableCell>{props.room.id}</TableCell>
@@ -11,4 +11,4 @@ function Room(props) {
   );
 }
 
-export default Room;
+export default RoomRow;
