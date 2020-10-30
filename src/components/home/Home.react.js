@@ -1,13 +1,20 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useContext, useState, useEffect} from 'react';
+import FirebaseContext from 'components/firebase/FirebaseContext.react';
 
 import FormDialogButton from 'components/formDialogButton/FormDialogButton.react';
+import RoomsTable from 'components/room/RoomsTable.react';
+import GeneralChat from 'components/generalChat/GeneralChat.react';
+
 import useSocketSubscription from 'hooks/useSocketSubscription';
 import useSocketClient from 'hooks/useSocketClient';
 
-function Home() {
+function Home(props) {
+  const firebase = useContext(FirebaseContext);
+
   const [errors, data] = useSocketSubscription(['TEST']);
   const socket = useSocketClient();
+  const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -16,19 +23,31 @@ function Home() {
     }
   }, [data, setMessages]);
 
+  useEffect(async () => {
+    const userData = await firebase.doGetUserProfile();
+    setUserData(userData);
+  }, []);
+
   return (
-    <div>
-      <h1>This is HOME</h1>
-      <FormDialogButton />
-      <button onClick={() => socket.emit('message', 'Hola')}>
-        Send message to ws server
-      </button>
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>{message.text}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div style={{display: 'flex'}}>
+        <div>
+          <h1>{userData ? userData.username : 'Usuario desconocido'}</h1>
+          <h1>This is HOME</h1>
+          <FormDialogButton />
+          <button onClick={() => socket.emit('message', 'Hola')}>
+            Send message to ws server
+          </button>
+          <ul>
+            {messages.map((message) => (
+              <li key={message.id}>{message.text}</li>
+            ))}
+          </ul>
+        </div>
+        <RoomsTable />
+      </div>
+      <GeneralChat />
+    </>
   );
 }
 
