@@ -19,18 +19,46 @@ class Firebase {
     app.initializeApp(config);
 
     this.auth = app.auth();
-    this.db = app.database();
     this.facebookProvider = new app.auth.FacebookAuthProvider();
     this.firestore = app.firestore();
   }
 
-  doCreateUserWithEmailAndPassword = (email, password) =>
-    this.auth.createUserWithEmailAndPassword(email, password);
+  doCreateUserWithEmailAndPassword = (email, password) => {
+    return this.auth
+      .createUserWithEmailAndPassword(email, password)
+      .catch((error) => console.error('Error: ', error));
+  };
 
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
   doSignOut = () => this.auth.signOut();
+
+  doGetUserProfile = async () => {
+    const userData = await this.firestore
+      .collection('Users')
+      .doc(this.auth.currentUser.uid)
+      .get();
+    return userData.data();
+  };
+
+  doUpdateProfile = (user) => {
+    return this.firestore
+      .collection('Users')
+      .doc(this.auth.currentUser.uid)
+      .update(user)
+      .catch((error) => console.error('Error: ', error));
+  };
+
+  doGetAvailableRooms = () => {
+    const rooms = [];
+    this.firestore.collection('Room').onSnapshot((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        rooms.push({...doc.data(), id: doc.id});
+      });
+    });
+    return rooms;
+  };
 
   //   doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
 
