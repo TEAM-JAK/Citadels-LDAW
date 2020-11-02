@@ -5,9 +5,12 @@ import { INVALID_MOVE } from 'boardgame.io/core';
  * @param {G} G - Game state provided by boardGame.io
  * @param {ctx} ctx - ctx states provided by boardGame.io
  */
-export function ChooseCharacter(G, ctx) {
+export function ChooseCharacter(G, ctx, indx) {
   console.log("Entered ChooseCharacter")
   // TODO: implement correctly for know it just pops from character deck
+  // if 2 players after chose place another card facedown so when 2 players two choses. First time it doesn't facedown
+  // if 7 players and turn is 6, pass facedown to deckofcards. So player 7 has two options.
+  // when left only one card in deck pass to facedown.
   G.players[ctx.currentPlayer].public.chosenCharacter.push(G.deckOfCharacters.pop())
 }
 
@@ -31,7 +34,7 @@ export function TakeCoin(G, ctx) {
  * @param {G} G 
  * @param {ctx} ctx 
  */
-export function TakeDistrictCard(G, ctx) {
+export function TakeDistrictCard(G, ctx, opt) {
   // Takes top 2 district cards and allows user to choose between them
   // If it is merchant(6) give one coin extra
   // If architect draw 2 district cards and add to hand
@@ -47,8 +50,7 @@ export function TakeDistrictCard(G, ctx) {
 export function BuildDistrict(G, ctx, handIndex) {
   console.log("Entered BuildDistrict")
   // if Warlord(8) setStage('extraStage')
-  ctx.events.endStage();
-  ctx.events.endTurn();
+  // move user lowest character to characterdeck
 }
 
 /**
@@ -56,13 +58,16 @@ export function BuildDistrict(G, ctx, handIndex) {
  * @param {G} G 
  * @param {ctx} ctx 
  */
-export function SkipStage(G, ctx) {
+export function SkipOrEndStage(G, ctx) {
+  // move user lowest character to characterdeck
   // if Warlord(8) setStage('extraStage')
   ctx.events.endStage();
   ctx.events.endTurn();
 }
 
-export function UseCharacterPower(G, ctx) {
+export function UseCharacterPower(G, ctx, character) {
+  // if ctx.is in takeActionStage change powerUsed to 1 and do not move
+  // else move user lowest character to characterdeck
   //TODO
   // a) selects another character and kills, stills coins or changes cards
   // b) receive extra one gold pero color district in city

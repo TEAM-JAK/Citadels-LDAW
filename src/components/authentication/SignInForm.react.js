@@ -154,6 +154,7 @@ function SignInForm() {
           onChange={onChange}
           label="Email"
           variant="outlined"
+          id="sign-in-email-text-field"
         />
         <FormControl className={classes.field} variant="outlined">
           <InputLabel htmlFor="sign-in-password">Password</InputLabel>
@@ -184,6 +185,7 @@ function SignInForm() {
             variant="contained"
             color="primary"
             disabled={loading}
+            id="sign-in-button"
           >
             {!loading && 'Sign In'}
           </Button>

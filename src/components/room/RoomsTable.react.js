@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import Room from './Room.react';
+import Room from './RoomRow.react';
 
 function RoomsTable() {
   const firebase = useContext(FirebaseContext);

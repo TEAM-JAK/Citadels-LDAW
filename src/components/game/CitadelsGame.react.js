@@ -4,7 +4,7 @@ import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
          CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
          IsGameOver, GameOver} from "./Logic.react";
 import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
-         SkipStage, UseCharacterPower, WarlordPower} from "./Moves.react";
+         SkipOrEndStage, UseCharacterPower, WarlordPower} from "./Moves.react";
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
@@ -12,12 +12,16 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //   faceDownCharacterCards: [characterCard],
 //   faceUpCharacterCards: [characterCard],
 //   playerWithCrown : Int,
+//   finishedFirst: -1,
+//   secret: {
+//      0 : {
+//        hand: [districtCard]
+//      },
+//      ...
+//   },
 //   players : { // In round table sit order
-//      '0' : {
+//      0 : {
 //              playerstate with secret and non
-//              secret : {
-//                hand: [districtCard],
-//              },
 //              public : {
 //                coin: Int,
 //                builtCity: [districtCard],
@@ -25,8 +29,8 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //                chosenCharacter: [characterCard],
 //              }
 //            },
-//      '1' : {},
-//      '2' : {},
+//      1 : {},
+//      2 : {},
 //         ...
 //   }
 // }
@@ -48,6 +52,7 @@ function Shuffle(array) {
  * @returns {int} index of player. 
  */
 function GetOldestPlayer() {
+  //TODO
   return 4;
 }
 
@@ -57,14 +62,12 @@ function GetOldestPlayer() {
  */
 function PlayerInitialSetUp() {
   return {
-    secret : {
-      hand: [],
-    },
     public : {
       coin: 2,
       builtCity: [],
       handCount : 4,
       chosenCharacter: [],
+      powerUsed: 0,
     }
   }
 }
@@ -83,11 +86,15 @@ function GameSetUp(ctx) {
   let faceDownCharacterCards = [];
   let faceUpCharacterCards = [];
   let playerWithCrown = GetOldestPlayer();
+  let finishedFirst = -1;
+  let secret = {}
   let players = {}
   for (let i = 0; i < ctx.numPlayers; i++) {
     players[i] = PlayerInitialSetUp();
+    secret[i] = {};
+    secret[i].hand = [];
     for (let j = 0; j < 4; j++) {
-      players[i].secret.hand.push(deckOfDistricts.pop());
+      secret[i].hand.push(deckOfDistricts.pop());
     }
     pileOfCoins = pileOfCoins - 2;
   }
@@ -98,6 +105,7 @@ function GameSetUp(ctx) {
     faceDownCharacterCards,
     faceUpCharacterCards,
     playerWithCrown,
+    secret,
     players
   }
 }
@@ -108,7 +116,7 @@ const CitadelsGame = {
 
   setup: (ctx) => (GameSetUp(ctx)),
 
-  playerView: (G, ctx, playerID) => (RemoveSecretFromPlayer(G, ctx, playerID)), //not sure it works yet.
+  //playerView: (G, ctx, playerID) => (RemoveSecretFromPlayer(G, ctx, playerID)), //not sure it works yet.
 
   phases: {
     drawPhase: {
@@ -151,15 +159,15 @@ const CitadelsGame = {
             next: 'buildStage',
           },
           buildStage: {
-            moves: {BuildDistrict, SkipStage, UseCharacterPower},
+            moves: {BuildDistrict, SkipOrEndStage, UseCharacterPower},
           },
           extraStage: {
             moves: {WarlordPower},
           },
         },
       },
+      endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)),
       onEnd: (G, ctx) => (CleanPlayPhase(G, ctx)), //needs test
-      endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)), 
       next: 'drawPhase',
     },
   },
