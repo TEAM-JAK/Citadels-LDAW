@@ -107,6 +107,10 @@ section {
 }
 body {
   line-height: 1;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: center;
+  background-image: url('./assets/background/pattern.jpg');
 }
 ol,
 ul {

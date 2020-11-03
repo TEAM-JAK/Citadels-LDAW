@@ -8,8 +8,27 @@ import GeneralChat from 'components/generalChat/GeneralChat.react';
 
 import useSocketSubscription from 'hooks/useSocketSubscription';
 import useSocketClient from 'hooks/useSocketClient';
+import {Paper, Typography} from '@material-ui/core';
 
-function Home(props) {
+function Home() {
+  const containerStyle = {
+    width: '1000px',
+    height: '500px',
+    backgroundColor: 'rgb(238, 238, 238)',
+    padding: '25px',
+    position: 'relative',
+  };
+
+  const upperRowStyle = {
+    display: 'flex',
+    margin: '20px 0',
+  };
+
+  const lowerRowStyle = {
+    display: 'flex',
+    margin: '20px 0',
+  };
+
   const firebase = useContext(FirebaseContext);
 
   const [errors, data] = useSocketSubscription(['TEST']);
@@ -23,31 +42,51 @@ function Home(props) {
     }
   }, [data, setMessages]);
 
-  useEffect(async () => {
-    const userData = await firebase.doGetUserProfile();
-    setUserData(userData);
+  useEffect(() => {
+    async function fetchUserData() {
+      const userData = await firebase.doGetUserProfile();
+
+      setUserData(userData);
+    }
+    fetchUserData();
   }, []);
 
   return (
-    <>
-      <div style={{display: 'flex'}}>
-        <div>
-          <h1>{userData ? userData.username : 'Usuario desconocido'}</h1>
-          <h1>This is HOME</h1>
-          <FormDialogButton />
-          <button onClick={() => socket.emit('message', 'Hola')}>
+    <Paper variant="outlined">
+      <div style={containerStyle}>
+        <div style={upperRowStyle}>
+          <div>
+            <Typography variant="h5" gutterBottom>
+              CITADELS
+            </Typography>
+          </div>
+          <div style={{marginLeft: 'auto', marginRight: 0}}>
+            <Typography variant="h5" gutterBottom>
+              Hello there,{' '}
+              <span style={{color: 'green'}}>
+                {userData ? userData.username : 'User'}
+              </span>
+              !
+            </Typography>
+            {/* <button onClick={() => socket.emit('message', 'Hola')}>
             Send message to ws server
-          </button>
+          </button> */}
+          </div>
           <ul>
             {messages.map((message) => (
               <li key={message.id}>{message.text}</li>
             ))}
           </ul>
         </div>
-        <RoomsTable />
+        <div style={lowerRowStyle}>
+          <GeneralChat username={userData ? userData.username : ''} />
+          <RoomsTable />
+        </div>
+        <div style={{position: 'absolute', right: 20, bottom: 20}}>
+          <FormDialogButton />
+        </div>
       </div>
-      <GeneralChat />
-    </>
+    </Paper>
   );
 }
 
