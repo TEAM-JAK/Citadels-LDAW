@@ -19,7 +19,7 @@ function FormDialogButton() {
   };
 
   return (
-    <div>
+    <div style={{float: 'right', marginBottom: '20px'}}>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
         Create Game
       </Button>

@@ -79,11 +79,11 @@ function Home() {
           </ul>
         </div>
         <div style={lowerRowStyle}>
+          <div>
+            <FormDialogButton />
+            <RoomsTable />
+          </div>
           <GeneralChat username={userData ? userData.username : ''} />
-          <RoomsTable />
-        </div>
-        <div style={{position: 'absolute', right: 20, bottom: 20}}>
-          <FormDialogButton />
         </div>
       </div>
     </Paper>
