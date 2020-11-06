@@ -1,6 +1,6 @@
 import { CreateDeckOfDistricts, CreateDeckOfCharacters } from "./Cards.react";
 import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
-         SetDrawPhase, IsDrawPhaseOver, IsPlayPhaseOver,
+         SetDrawPhase, IsDrawPhaseOver, BeginPlayTurn, SetPlayPhase, IsPlayPhaseOver,
          CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
          IsGameOver, GameOver} from "./Logic.react";
 import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
@@ -13,6 +13,8 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //   faceUpCharacterCards: [characterCard],
 //   playerWithCrown : Int,
 //   finishedFirst: -1,
+//   murderedCharacter: -1,
+//   muggedCharacter: -1,
 //   secret: {
 //      0 : {
 //        hand: [districtCard]
@@ -23,10 +25,12 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //      0 : {
 //              playerstate with secret and non
 //              public : {
-//                coin: Int,
+//                coins: Int,
 //                builtCity: [districtCard],
 //                handCount : Int,
 //                chosenCharacter: [characterCard],
+//                powerUsed: bool,
+//                districtBuiltOnTurn: int,
 //              }
 //            },
 //      1 : {},
@@ -63,11 +67,12 @@ function GetOldestPlayer() {
 function PlayerInitialSetUp() {
   return {
     public : {
-      coin: 2,
+      coins: 2,
       builtCity: [],
       handCount : 4,
       chosenCharacter: [],
-      powerUsed: 0,
+      powerUsed: false,
+      districtBuiltOnTurn: 0,
     }
   }
 }
@@ -87,6 +92,8 @@ function GameSetUp(ctx) {
   let faceUpCharacterCards = [];
   let playerWithCrown = GetOldestPlayer();
   let finishedFirst = -1;
+  let murderedCharacter = -1;
+  let muggedCharacter = -1;
   let secret = {}
   let players = {}
   for (let i = 0; i < ctx.numPlayers; i++) {
@@ -142,6 +149,7 @@ const CitadelsGame = {
 
     playPhase: {
       turn: {
+        onBegin: (G, ctx) => (BeginPlayTurn(G, ctx)),
         activePlayers: {
           currentPlayer : {stage: 'takeActionStage'},
           next: {
@@ -166,6 +174,7 @@ const CitadelsGame = {
           },
         },
       },
+      onBegin: (G, ctx) => (SetPlayPhase(G, ctx)),
       endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)),
       onEnd: (G, ctx) => (CleanPlayPhase(G, ctx)), //needs test
       next: 'drawPhase',

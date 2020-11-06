@@ -46,7 +46,7 @@ function Home(props) {
         </div>
         <RoomsTable />
       </div>
-      <GeneralChat />
+      {/* <GeneralChat /> */}
     </>
   );
 }

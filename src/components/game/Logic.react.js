@@ -50,10 +50,6 @@ export function GetPlayerOrderPlayPhase (G, ctx) {
     for (let j = 0; j < G.players[i].public.chosenCharacter.length; j++) {
       let key = i+(j*ctx.numPlayers);
       dict[key] = G.players[i].public.chosenCharacter[j].order
-      if(G.players[i].public.chosenCharacter[j].order === 4) {
-        playerWithCrown = i;
-        G.playerWithCrown = playerWithCrown; // TOCHECK not sure if it will work
-      }
     }
   }
   
@@ -67,7 +63,7 @@ export function GetPlayerOrderPlayPhase (G, ctx) {
 
   // Maps keys to Int.
   playerOrder = playerOrder.map(function(x) {return parseInt(x,10)});
-
+  console.log("GetPlayerOrderPlayPhase");
   return playerOrder
 }
 
@@ -90,19 +86,19 @@ function isKing(G, indx) {
  */
 export function SetDrawPhase(G, ctx) {
   var randomNumber = Math.floor(Math.random() * 8); //random between 0 to 8
-  G.faceDownCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1));
+  G.faceDownCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1)[0]);
   if (ctx.numPlayers < 6 && ctx.numPlayers > 3) {
     randomNumber = Math.floor(Math.random() * 7);
     while(isKing(G, randomNumber)) {
       randomNumber = Math.floor(Math.random() * 7);
     }
-    G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1));
+    G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1)[0]);
     if (ctx.numPlayers === 4) {
       randomNumber = randomNumber = Math.floor(Math.random() * 6);
       while(isKing(G, randomNumber)) {
         randomNumber = Math.floor(Math.random() * 6);
       }
-      G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1));
+      G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber,1)[0]);
     }
     return G
   }
@@ -118,6 +114,30 @@ export function IsDrawPhaseOver(G, ctx) {
   return phaseIsComplete;
 }
 
+//TOCHECK
+export function BeginPlayTurn(G, ctx) {
+  if(G.players[ctx.currentPlayer].public.chosenCharacter[0].order === 4) {
+    G.playerWithCrown = ctx.currentPlayer; // TOCHECK not sure if it will work
+  }
+
+  // check murderedCharacter and mugedCharacter  
+
+  return G
+}
+
+//TOCHECK
+export function SetPlayPhase(G,ctx) {
+  const newPlayers = {...G.players};
+  if(ctx.numPlayers < 4) {
+    for (const key in newPlayers) {
+      newPlayers[key].public.chosenCharacter.sort(function (a,b) {
+        return a.order - b.order;
+      });
+    }
+  }
+  return {...G, players: newPlayers}
+}
+
 export function IsPlayPhaseOver(G, ctx) {
 
   // Considering that each play turn the character card is returned to deck of character from player who used it.
@@ -131,6 +151,8 @@ export function IsPlayPhaseOver(G, ctx) {
  * @param {any} ctx - Game context
  */
 export function CleanPlayPhase(G, ctx) {
+  // reset murdered character per play phase.
+  G.murderedCharacter = -1;
   for (let i = 0; i < ctx.numPlayers; i++) {
     while(G.players[i].public.chosenCharacter.length !== 0) {
       G.deckOfCharacters.push(G.players[i].public.chosenCharacter.pop());

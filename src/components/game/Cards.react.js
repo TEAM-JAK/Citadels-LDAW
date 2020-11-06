@@ -38,7 +38,7 @@ export function CreateDeckOfCharacters() {
 }
 
 function CreateDistrictCard(name, cost, type) {
-  return {name, cost, type}
+  return {name: name, cost: cost, type: type}
   //not sure how to do specialPower which should be a function.
 }
 
