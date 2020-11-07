@@ -47,19 +47,15 @@ class Firebase {
       .catch((error) => console.error('Error: ', error));
   };
 
-  getAvailableRooms = () => {
-    const rooms = [];
-    this.firestore.collection('Room').onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        rooms.push({...doc.data(), id: doc.id});
-      });
-    });
-    return rooms;
-  };
-
-  //   doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
-
-  //   doPasswordUpdate = (password) => this.auth.currentUser.updatePassword(password);
+  // fetchAvailableRooms = () => {
+  //   const rooms = [];
+  //   this.firestore.collection('Room').onSnapshot((querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       rooms.push({...doc.data(), id: doc.id});
+  //     });
+  //   });
+  //   return rooms;
+  // };
 }
 
 export default Firebase;

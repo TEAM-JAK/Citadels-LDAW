@@ -18,7 +18,7 @@ function RoomsTable() {
   const [page, setPage] = React.useState(0);
 
   const getRooms = () => {
-    const availabeRooms = firebase.getAvailableRooms();
+    const availabeRooms = firebase.fetchAvailableRooms();
     setRooms(availabeRooms);
   };
 
