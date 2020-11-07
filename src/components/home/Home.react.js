@@ -29,65 +29,8 @@ function Home() {
     margin: '20px 0',
   };
 
-  const firebase = useContext(FirebaseContext);
-
-  const [errors, data] = useSocketSubscription(['TEST']);
-  const socket = useSocketClient();
-  const [userData, setUserData] = useState(null);
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    if (data != null) {
-      setMessages([...messages, data]);
-    }
-  }, [data, setMessages]);
-
-  useEffect(() => {
-    async function fetchUserData() {
-      const userData = await firebase.doGetUserProfile();
-
-      setUserData(userData);
-    }
-    fetchUserData();
-  }, []);
-
-  return (
-    <Paper variant="outlined">
-      <div style={containerStyle}>
-        <div style={upperRowStyle}>
-          <div>
-            <Typography variant="h5" gutterBottom>
-              CITADELS
-            </Typography>
-          </div>
-          <div style={{marginLeft: 'auto', marginRight: 0}}>
-            <Typography variant="h5" gutterBottom>
-              Hello there,{' '}
-              <span style={{color: 'green'}}>
-                {userData ? userData.username : 'User'}
-              </span>
-              !
-            </Typography>
-            {/* <button onClick={() => socket.emit('message', 'Hola')}>
-            Send message to ws server
-          </button> */}
-          </div>
-          <ul>
-            {messages.map((message) => (
-              <li key={message.id}>{message.text}</li>
-            ))}
-          </ul>
-        </div>
-        <div style={lowerRowStyle}>
-          <div>
-            <FormDialogButton />
-            <RoomsTable />
-          </div>
-          <GeneralChat username={userData ? userData.username : ''} />
-        </div>
-      </div>
-    </Paper>
-  );
+function Home() {
+  return <div>hello</div>;
 }
 
 export default Home;

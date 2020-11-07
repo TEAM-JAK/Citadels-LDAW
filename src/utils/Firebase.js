@@ -23,18 +23,15 @@ class Firebase {
     this.firestore = app.firestore();
   }
 
-  doCreateUserWithEmailAndPassword = (email, password) => {
-    return this.auth
-      .createUserWithEmailAndPassword(email, password)
-      .catch((error) => console.error('Error: ', error));
-  };
+  createUserWithEmailAndPassword = (email, password) =>
+    this.auth.createUserWithEmailAndPassword(email, password);
 
-  doSignInWithEmailAndPassword = (email, password) =>
+  signInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
-  doSignOut = () => this.auth.signOut();
+  signOut = () => this.auth.signOut();
 
-  doGetUserProfile = async () => {
+  fetchUserProfile = async () => {
     const userData = await this.firestore
       .collection('Users')
       .doc(this.auth.currentUser.uid)
@@ -42,7 +39,7 @@ class Firebase {
     return userData.data();
   };
 
-  doUpdateProfile = (user) => {
+  updateProfile = (user) => {
     return this.firestore
       .collection('Users')
       .doc(this.auth.currentUser.uid)
@@ -50,7 +47,7 @@ class Firebase {
       .catch((error) => console.error('Error: ', error));
   };
 
-  doGetAvailableRooms = () => {
+  getAvailableRooms = () => {
     const rooms = [];
     this.firestore.collection('Room').onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {

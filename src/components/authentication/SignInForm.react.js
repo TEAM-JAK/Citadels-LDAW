@@ -117,7 +117,7 @@ function SignInForm() {
     setLoading(true);
 
     firebase
-      .doSignInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email, password)
       .then(() => {
         setFormState({...INITIAL_STATE});
         setLoading(false);

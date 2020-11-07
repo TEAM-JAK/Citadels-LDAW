@@ -85,7 +85,7 @@ function SignUpForm() {
     setLoading(true);
 
     firebase
-      .doCreateUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then((result) =>
         firebase.firestore.collection('Users').doc(result.user.uid).set({
           username,
