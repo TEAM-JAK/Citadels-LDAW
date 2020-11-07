@@ -6,7 +6,7 @@ import Board from "./Board.react";
 const GameApp = Client({
   game: CitadelsGame,
   board: Board,
-  numPlayers: 8
+  numPlayers: 5
 });
 
 export default GameApp;

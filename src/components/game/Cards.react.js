@@ -18,7 +18,7 @@ export function CreateDeckOfDistricts() {
   const deck = []
   // Will need to keep a file or something with the distric information.
   for (let index = 0; index < 68; index++) {
-    deck.push(CreateDistrictCard("Name: "+index, 3, 3));
+    deck.push(CreateDistrictCard("Name: "+index, (Math.floor(Math.random() * 3) + 1), Math.floor(Math.random() * 4)));
   }
   return deck
 }
@@ -38,7 +38,7 @@ export function CreateDeckOfCharacters() {
 }
 
 function CreateDistrictCard(name, cost, type) {
-  return {name, cost, type}
+  return {name: name, cost: cost, type: type}
   //not sure how to do specialPower which should be a function.
 }
 

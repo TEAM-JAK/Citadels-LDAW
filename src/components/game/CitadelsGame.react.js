@@ -1,10 +1,10 @@
 import { CreateDeckOfDistricts, CreateDeckOfCharacters } from "./Cards.react";
 import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
-         SetDrawPhase, IsDrawPhaseOver, IsPlayPhaseOver,
+         SetDrawPhase, IsDrawPhaseOver, BeginPlayTurn, SetPlayPhase, IsPlayPhaseOver,
          CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
          IsGameOver, GameOver} from "./Logic.react";
 import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
-         SkipStage, UseCharacterPower, WarlordPower} from "./Moves.react";
+         SkipOrEndStage, EndTurn, UseCharacterPower, WarlordPower} from "./Moves.react";
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
@@ -12,21 +12,27 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //   faceDownCharacterCards: [characterCard],
 //   faceUpCharacterCards: [characterCard],
 //   playerWithCrown : Int,
+//   finishedFirst: -1,
+//   murderedCharacter: -1,
+//   muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1},
+//   secret: {
+//      0 : {
+//        hand: [districtCard]
+//      },
+//      ...
+//   },
 //   players : { // In round table sit order
-//      '0' : {
-//              playerstate with secret and non
-//              secret : {
-//                hand: [districtCard],
-//              },
-//              public : {
-//                coin: Int,
-//                builtCity: [districtCard],
-//                handCount : Int,
-//                chosenCharacter: [characterCard],
-//              }
-//            },
-//      '1' : {},
-//      '2' : {},
+//      0 : {
+//            playerstate with secret and non
+//            coins: Int,
+//            builtCity: [districtCard],
+//            handCount : Int,
+//            chosenCharacter: [characterCard],
+//            powerUsed: bool,
+//            districtBuiltOnTurn: int,
+//          },
+//      1 : {},
+//      2 : {},
 //         ...
 //   }
 // }
@@ -48,6 +54,7 @@ function Shuffle(array) {
  * @returns {int} index of player. 
  */
 function GetOldestPlayer() {
+  //TODO
   return 4;
 }
 
@@ -57,15 +64,12 @@ function GetOldestPlayer() {
  */
 function PlayerInitialSetUp() {
   return {
-    secret : {
-      hand: [],
-    },
-    public : {
-      coin: 2,
-      builtCity: [],
-      handCount : 4,
-      chosenCharacter: [],
-    }
+    coins: 2,
+    builtCity: [],
+    handCount : 4,
+    chosenCharacter: [],
+    powerUsed: false,
+    districtBuiltOnTurn: 0,
   }
 }
 
@@ -83,11 +87,17 @@ function GameSetUp(ctx) {
   let faceDownCharacterCards = [];
   let faceUpCharacterCards = [];
   let playerWithCrown = GetOldestPlayer();
-  let players = {}
+  let finishedFirst = -1;
+  let murderedCharacter = -1;
+  let muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1};
+  let secret = {};
+  let players = {};
   for (let i = 0; i < ctx.numPlayers; i++) {
     players[i] = PlayerInitialSetUp();
+    secret[i] = {};
+    secret[i].hand = [];
     for (let j = 0; j < 4; j++) {
-      players[i].secret.hand.push(deckOfDistricts.pop());
+      secret[i].hand.push(deckOfDistricts.pop());
     }
     pileOfCoins = pileOfCoins - 2;
   }
@@ -98,6 +108,10 @@ function GameSetUp(ctx) {
     faceDownCharacterCards,
     faceUpCharacterCards,
     playerWithCrown,
+    finishedFirst,
+    murderedCharacter,
+    muggedCharacter,
+    secret,
     players
   }
 }
@@ -108,7 +122,7 @@ const CitadelsGame = {
 
   setup: (ctx) => (GameSetUp(ctx)),
 
-  playerView: (G, ctx, playerID) => (RemoveSecretFromPlayer(G, ctx, playerID)), //not sure it works yet.
+  //playerView: (G, ctx, playerID) => (RemoveSecretFromPlayer(G, ctx, playerID)), //not sure it works yet.
 
   phases: {
     drawPhase: {
@@ -140,6 +154,7 @@ const CitadelsGame = {
             currentPlayer : {stage: 'takeActionStage'},
           },
         },
+        onBegin: (G, ctx) => (BeginPlayTurn(G, ctx)),
         order: {
           first: (G, ctx) => 0,
           next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
@@ -151,15 +166,16 @@ const CitadelsGame = {
             next: 'buildStage',
           },
           buildStage: {
-            moves: {BuildDistrict, SkipStage, UseCharacterPower},
+            moves: {BuildDistrict, SkipOrEndStage, UseCharacterPower},
           },
           extraStage: {
-            moves: {WarlordPower},
+            moves: {WarlordPower, EndTurn},
           },
         },
       },
+      onBegin: (G, ctx) => (SetPlayPhase(G, ctx)),
+      endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)),
       onEnd: (G, ctx) => (CleanPlayPhase(G, ctx)), //needs test
-      endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)), 
       next: 'drawPhase',
     },
   },
