@@ -1,7 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
-// import PrivateRoute from 'components/shared/PrivateRoute.react';
 import Home from 'components/home/Home.react';
 import Authentication from 'components/authentication/Authentication.react';
 
