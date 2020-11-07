@@ -1,3 +1,5 @@
+import {getCurrentCharacter, findPlayerWithCharacter, EndTurn} from "./Moves.react";
+
 export function RemoveSecretFromPlayer (G, ctx, playerID) {
   //return G with out secret from other players.
   //not working locally
@@ -47,9 +49,9 @@ export function GetPlayerOrderPlayPhase (G, ctx) {
   let dict = {}
   let playerWithCrown = -1
   for (let i = 0; i < ctx.numPlayers; i++) {
-    for (let j = 0; j < G.players[i].public.chosenCharacter.length; j++) {
+    for (let j = 0; j < G.players[i].chosenCharacter.length; j++) {
       let key = i+(j*ctx.numPlayers);
-      dict[key] = G.players[i].public.chosenCharacter[j].order
+      dict[key] = G.players[i].chosenCharacter[j].order
     }
   }
   
@@ -116,11 +118,28 @@ export function IsDrawPhaseOver(G, ctx) {
 
 //TOCHECK
 export function BeginPlayTurn(G, ctx) {
-  if(G.players[ctx.currentPlayer].public.chosenCharacter[0].order === 4) {
+  if(G.players[ctx.currentPlayer].chosenCharacter[0].order === 4) {
     G.playerWithCrown = ctx.currentPlayer; // TOCHECK not sure if it will work
   }
 
   // check murderedCharacter and mugedCharacter  
+  if (getCurrentCharacter(G, ctx) === G.murderedCharacter) {
+    console.log("<-------Player :"+ctx.currentPlayer+" was murdered and lost turn with character: "+ getCurrentCharacter(G, ctx));
+    EndTurn(G, ctx);
+    return G
+  }
+
+  if(getCurrentCharacter(G,ctx) === G.muggedCharacter.muggedToCharacter) {
+    if (G.muggedCharacter.muggedToCharacter === G.murderedCharacter) {
+      console.log("Can not mugg dead people");
+    } else {
+      console.log("<-------Player :"+ctx.currentPlayer+" was mugged: ");
+      let muggedPlayer = findPlayerWithCharacter(G, ctx, G.muggedCharacter.muggedToCharacter);
+      G.players[G.muggedCharacter.muggedFromPlayer].coins = G.players[G.muggedCharacter.muggedFromPlayer].coins + G.players[muggedPlayer].coins;
+      G.players[muggedPlayer].coins = 0;
+    }
+  }
+
 
   return G
 }
@@ -130,7 +149,7 @@ export function SetPlayPhase(G,ctx) {
   const newPlayers = {...G.players};
   if(ctx.numPlayers < 4) {
     for (const key in newPlayers) {
-      newPlayers[key].public.chosenCharacter.sort(function (a,b) {
+      newPlayers[key].chosenCharacter.sort(function (a,b) {
         return a.order - b.order;
       });
     }
@@ -153,9 +172,11 @@ export function IsPlayPhaseOver(G, ctx) {
 export function CleanPlayPhase(G, ctx) {
   // reset murdered character per play phase.
   G.murderedCharacter = -1;
+  G.muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1};
+
   for (let i = 0; i < ctx.numPlayers; i++) {
-    while(G.players[i].public.chosenCharacter.length !== 0) {
-      G.deckOfCharacters.push(G.players[i].public.chosenCharacter.pop());
+    while(G.players[i].chosenCharacter.length !== 0) {
+      G.deckOfCharacters.push(G.players[i].chosenCharacter.pop());
     }
   }
 
@@ -180,7 +201,7 @@ export function IsGameOver(G, ctx) {
   let gameIsOver = false
   for (let i = 0; i < ctx.numPlayers; i++) {
     // Want to take 7 from modes of game some other time TODO.
-    if(G.players[i].public.builtCity.length === 7) {
+    if(G.players[i].builtCity.length === 7) {
       gameIsOver = true;
     }
   }

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React from 'react';
 import {useContext, useState, useEffect} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
@@ -11,6 +12,13 @@ import useSocketClient from 'hooks/useSocketClient';
 
 function Home(props) {
   const firebase = useContext(FirebaseContext);
+=======
+import React from 'components/home/node_modules/react';
+import {useState, useEffect} from 'components/home/node_modules/react';
+
+import useSocketClient from 'components/home/node_modules/hooks/useSocketClient';
+import useSocketSubscription from 'components/home/node_modules/hooks/useSocketSubscription';
+>>>>>>> Stashed changes
 
   const [errors, data] = useSocketSubscription(['TEST']);
   const socket = useSocketClient();

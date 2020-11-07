@@ -4,7 +4,7 @@ import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
          CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
          IsGameOver, GameOver} from "./Logic.react";
 import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
-         SkipOrEndStage, UseCharacterPower, WarlordPower} from "./Moves.react";
+         SkipOrEndStage, EndTurn, UseCharacterPower, WarlordPower} from "./Moves.react";
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
@@ -14,7 +14,7 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //   playerWithCrown : Int,
 //   finishedFirst: -1,
 //   murderedCharacter: -1,
-//   muggedCharacter: -1,
+//   muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1},
 //   secret: {
 //      0 : {
 //        hand: [districtCard]
@@ -23,16 +23,14 @@ import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
 //   },
 //   players : { // In round table sit order
 //      0 : {
-//              playerstate with secret and non
-//              public : {
-//                coins: Int,
-//                builtCity: [districtCard],
-//                handCount : Int,
-//                chosenCharacter: [characterCard],
-//                powerUsed: bool,
-//                districtBuiltOnTurn: int,
-//              }
-//            },
+//            playerstate with secret and non
+//            coins: Int,
+//            builtCity: [districtCard],
+//            handCount : Int,
+//            chosenCharacter: [characterCard],
+//            powerUsed: bool,
+//            districtBuiltOnTurn: int,
+//          },
 //      1 : {},
 //      2 : {},
 //         ...
@@ -66,14 +64,12 @@ function GetOldestPlayer() {
  */
 function PlayerInitialSetUp() {
   return {
-    public : {
-      coins: 2,
-      builtCity: [],
-      handCount : 4,
-      chosenCharacter: [],
-      powerUsed: false,
-      districtBuiltOnTurn: 0,
-    }
+    coins: 2,
+    builtCity: [],
+    handCount : 4,
+    chosenCharacter: [],
+    powerUsed: false,
+    districtBuiltOnTurn: 0,
   }
 }
 
@@ -93,9 +89,9 @@ function GameSetUp(ctx) {
   let playerWithCrown = GetOldestPlayer();
   let finishedFirst = -1;
   let murderedCharacter = -1;
-  let muggedCharacter = -1;
-  let secret = {}
-  let players = {}
+  let muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1};
+  let secret = {};
+  let players = {};
   for (let i = 0; i < ctx.numPlayers; i++) {
     players[i] = PlayerInitialSetUp();
     secret[i] = {};
@@ -112,6 +108,9 @@ function GameSetUp(ctx) {
     faceDownCharacterCards,
     faceUpCharacterCards,
     playerWithCrown,
+    finishedFirst,
+    murderedCharacter,
+    muggedCharacter,
     secret,
     players
   }
@@ -149,13 +148,13 @@ const CitadelsGame = {
 
     playPhase: {
       turn: {
-        onBegin: (G, ctx) => (BeginPlayTurn(G, ctx)),
         activePlayers: {
           currentPlayer : {stage: 'takeActionStage'},
           next: {
             currentPlayer : {stage: 'takeActionStage'},
           },
         },
+        onBegin: (G, ctx) => (BeginPlayTurn(G, ctx)),
         order: {
           first: (G, ctx) => 0,
           next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
@@ -170,7 +169,7 @@ const CitadelsGame = {
             moves: {BuildDistrict, SkipOrEndStage, UseCharacterPower},
           },
           extraStage: {
-            moves: {WarlordPower},
+            moves: {WarlordPower, EndTurn},
           },
         },
       },

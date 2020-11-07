@@ -22,7 +22,43 @@ function Board(props) {
   }
 
   function UseCharacterPower() {
-    props.moves.UseCharacterPower(3);
+    let payload;
+    switch (props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order) {
+      case 1:
+        // payload: int character order number to murder
+        payload = Math.floor(Math.random() * 8) + 1
+        break;
+      case 2:
+        // payload: int character order number to steal
+        payload = Math.floor(Math.random() * 8) + 1
+        break;
+      case 3:
+        // payload: {isOptionA: true, changeHandsWith: int, changeMyHandIndx: [int]}
+        payload = {isOptionA: false, changeHandsWith: 4, changeMyHandIndx: [0,2]}
+        break;
+      case 4:
+        payload = -1
+        break;
+      case 5:
+        payload = -1
+        break;
+      case 6:
+        payload = -1
+        break;
+      case 7:
+        // No use power, just explanaition
+        break;
+      case 8:
+        payload = -1
+        break;
+      default:
+        break;
+    }
+    props.moves.UseCharacterPower(payload);
+  }
+
+  function EndStage() {
+    props.moves.EndStage();
   }
 
   return (
@@ -35,6 +71,7 @@ function Board(props) {
       <br></br>
       <button onClick={SkipOrEndStage}>SkipOrEndStage</button>
       <button onClick={UseCharacterPower}>UseCharacterPower</button>
+      <button onClick={EndStage}>EndStage</button>
     </div> 
   );
 }

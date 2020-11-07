@@ -9,4 +9,4 @@ const GameApp = Client({
   numPlayers: 5
 });
 
-export default GameApp;ç
+export default GameApp;
