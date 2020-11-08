@@ -62,7 +62,8 @@ function Board(props) {
   }
 
   function WarlordPower() {
-    props.moves.WarlordPower();
+    let destroy = { player: 0, builtCityHandIndx: 0}
+    props.moves.WarlordPower(destroy);
   }
 
   return (

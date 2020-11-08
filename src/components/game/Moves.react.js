@@ -287,6 +287,12 @@ function addExtraCoin(G, ctx, typeOfDistrict) {
   }
 }
 
+/**
+ * It is the function for the extra power for the warlord to destroy a card of another player.
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ * @param {any} destroy - an object containing the player number and it's index hand card to destroy
+ */
 export function WarlordPower(G, ctx, destroy) {
   // destroy: {
   //  player: Int,
@@ -294,8 +300,8 @@ export function WarlordPower(G, ctx, destroy) {
   // }
 
   let destroyedCity = G.players[destroy.player].builtCity.splice(destroy.builtCityHandIndx, 1)[0];
-  G.players[ctx.currentPlayer].coins =  G.players[ctx.currentPlayer].coins - destroyedCity.cost;
-  G.pileOfCoins = G.pileOfCoins + destroyedCity.cost;
+  G.players[ctx.currentPlayer].coins =  G.players[ctx.currentPlayer].coins - (destroyedCity.cost - 1);
+  G.pileOfCoins = G.pileOfCoins + (destroyedCity.cost - 1);
   G.deckOfDistricts.push(destroyedCity);
   
   // move user lowest character to characterdeck
