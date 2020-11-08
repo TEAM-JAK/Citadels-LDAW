@@ -237,6 +237,12 @@ function magicianPowerA(G, ctx, changeHandsWith) {
   return {...G, secret : resultSecret}
 }
 
+/**
+ * Switches the player hand with the deck.
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ * @param {[int]} changeMyHandIndx - array of index number from players hand to switch cards.
+ */
 function magicianPowerB(G, ctx, changeMyHandIndx) {
   // sort descending order
   changeMyHandIndx.sort(function(a,b){return b-a});
@@ -249,19 +255,31 @@ function magicianPowerB(G, ctx, changeMyHandIndx) {
   }
 }
 
+/**
+ * Utility funtion to count how many cards of specific type of distric has the player
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ * @param {int} typeOfDistrict - type of the distric type which gives extra coins to the character
+ */
 function getExtraCoins(G, ctx, typeOfDistrict) {
   let goldDistrictCount = 0
   G.players[ctx.currentPlayer].builtCity.forEach(city => {
-    if(city.order === typeOfDistrict) {
+    if(city.type === typeOfDistrict) {
       goldDistrictCount = goldDistrictCount + 1;
     }
   });
   return goldDistrictCount
 }
 
+/**
+ * Function that counts and adds coints to the character when specific type of city is built.
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ * @param {int} typeOfDistrict - type of the distric type which gives extra coins to the character
+ */
 function addExtraCoin(G, ctx, typeOfDistrict) {
-  console.log("<-------Extra coins added:")
   let addedGold = getExtraCoins(G, ctx, typeOfDistrict);
+  console.log("<-------Extra coins to add:" + addedGold);
   while(G.pileOfCoins !== 0 && addedGold !== 0) {
     G.pileOfCoins = G.pileOfCoins - 1;
     addedGold = addedGold - 1;
@@ -286,6 +304,13 @@ export function WarlordPower(G, ctx, destroy) {
   ctx.events.endTurn();
 }
 
+
+/**
+ * Function Use character Power, thakes the current user power and uses the power of that character.
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ * @param {any} payload - different payload from the front.
+ */
 export function UseCharacterPower(G, ctx, payload) {
   console.log("<----Use character Power called with payload: "+ payload)
   // Check on front when input:

@@ -55,7 +55,7 @@ function Shuffle(array) {
  */
 function GetOldestPlayer() {
   //TODO
-  return 4;
+  return 0;
 }
 
 /**
