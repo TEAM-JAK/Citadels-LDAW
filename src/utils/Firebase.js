@@ -46,16 +46,11 @@ class Firebase {
       .update(user)
       .catch((error) => console.error('Error: ', error));
   };
-
-  // fetchAvailableRooms = () => {
-  //   const rooms = [];
-  //   this.firestore.collection('Room').onSnapshot((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       rooms.push({...doc.data(), id: doc.id});
-  //     });
-  //   });
-  //   return rooms;
-  // };
 }
+
+export const AUTH_ERRORS = {
+  WRONG_PASSWORD: 'auth/wrong-password',
+  USER_NOT_FOUND: 'auth/user-not-found',
+};
 
 export default Firebase;

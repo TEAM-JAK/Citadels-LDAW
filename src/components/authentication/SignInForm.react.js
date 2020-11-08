@@ -1,6 +1,7 @@
 import React from 'react';
 import {useContext, useState} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
+import {AUTH_ERRORS} from 'utils/Firebase';
 import {useHistory} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
@@ -142,6 +143,12 @@ function SignInForm() {
         history.replace(ROUTES.HOME);
       })
       .catch((err) => {
+        console.log(err.code);
+        if (err.code === AUTH_ERRORS.USER_NOT_FOUND) {
+          setFieldErrors({...fieldErrors, email: 'Not found'});
+        } else if (err.code === AUTH_ERRORS.WRONG_PASSWORD) {
+          setFieldErrors({...fieldErrors, password: 'Incorrect password'});
+        }
         setLoading(false);
       });
   }

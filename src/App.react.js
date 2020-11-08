@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Home from 'components/home/Home.react';
 import Authentication from 'components/authentication/Authentication.react';
 import AuthRenderer from 'components/shared/AuthRenderer.react';
+import NoAuthRenderer from 'components/shared/NoAuthRenderer.react';
 import * as ROUTES from 'constants/routes';
 
 const App = () => (
@@ -14,7 +15,9 @@ const App = () => (
         </AuthRenderer>
       </Route>
       <Route path={ROUTES.AUTHENTICATION}>
-        <Authentication />
+        <NoAuthRenderer fallback={<p>Loading...</p>}>
+          <Authentication />
+        </NoAuthRenderer>
       </Route>
     </Switch>
   </Router>
