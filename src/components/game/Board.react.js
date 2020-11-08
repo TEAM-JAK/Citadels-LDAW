@@ -26,11 +26,11 @@ function Board(props) {
     switch (props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order) {
       case 1:
         // payload: int character order number to murder
-        payload = Math.floor(Math.random() * 8) + 1
+        payload = 5//Math.floor(Math.random() * 8) + 1
         break;
       case 2:
         // payload: int character order number to steal
-        payload = Math.floor(Math.random() * 8) + 1
+        payload = 3//Math.floor(Math.random() * 8) + 1
         break;
       case 3:
         // payload: {isOptionA: true, changeHandsWith: int, changeMyHandIndx: [int]}
@@ -57,21 +57,28 @@ function Board(props) {
     props.moves.UseCharacterPower(payload);
   }
 
-  function EndStage() {
-    props.moves.EndStage();
+  function EndTurn() {
+    props.moves.EndTurn();
+  }
+
+  function WarlordPower() {
+    props.moves.WarlordPower();
   }
 
   return (
     <div>
-      <h1>"This is the board"</h1>
       <button onClick={ChooseCharacter}>ChooseCharacter</button>
+      <br></br>
       <button onClick={TakeCoin}>TakeCoin</button>
       <button onClick={TakeDistrictCard}>TakeDistrictCard</button>
-      <button onClick={BuildDistrict}>BuildDistrict</button>
       <br></br>
+      <button onClick={BuildDistrict}>BuildDistrict</button>
       <button onClick={SkipOrEndStage}>SkipOrEndStage</button>
+      <br></br>
       <button onClick={UseCharacterPower}>UseCharacterPower</button>
-      <button onClick={EndStage}>EndStage</button>
+      <br></br>
+      <button onClick={WarlordPower}>UseWarlordPower</button>
+      <button onClick={EndTurn}>EndTurn</button>
     </div> 
   );
 }

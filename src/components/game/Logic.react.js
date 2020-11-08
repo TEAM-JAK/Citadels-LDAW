@@ -116,13 +116,17 @@ export function IsDrawPhaseOver(G, ctx) {
   return phaseIsComplete;
 }
 
-//TOCHECK
+/**
+ * Function called at the start of each players action turn. This checks when the player was mugged or murdered and moves the crown.
+ * @param {any} G - Game State 
+ * @param {any} ctx - Game context
+ */
 export function BeginPlayTurn(G, ctx) {
   if(G.players[ctx.currentPlayer].chosenCharacter[0].order === 4) {
-    G.playerWithCrown = ctx.currentPlayer; // TOCHECK not sure if it will work
+    G.playerWithCrown = ctx.currentPlayer;
   }
 
-  // check murderedCharacter and mugedCharacter  
+  
   if (getCurrentCharacter(G, ctx) === G.murderedCharacter) {
     console.log("<-------Player :"+ctx.currentPlayer+" was murdered and lost turn with character: "+ getCurrentCharacter(G, ctx));
     EndTurn(G, ctx);
@@ -144,9 +148,13 @@ export function BeginPlayTurn(G, ctx) {
   return G
 }
 
-//TOCHECK
+/**
+ * Orders arr of player when two caracter are chosen.
+ * @param {any} G - Game State 
+ * @param {any} ctx - Game context
+ */
 export function SetPlayPhase(G,ctx) {
-  const newPlayers = {...G.players};
+  let newPlayers = {...G.players};
   if(ctx.numPlayers < 4) {
     for (const key in newPlayers) {
       newPlayers[key].chosenCharacter.sort(function (a,b) {
