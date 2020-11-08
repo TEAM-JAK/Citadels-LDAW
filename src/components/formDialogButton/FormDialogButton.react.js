@@ -8,24 +8,24 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CreateGameDialog from 'components/formDialogButton/CreateGameDialog.react';
 
 function FormDialogButton() {
-    const [open, setOpen] = React.useState(false);
-  
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+  const [open, setOpen] = React.useState(false);
 
-    return (
-      <div>
-        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-          Create Game
-        </Button>
-        <CreateGameDialog open={open} onClose={handleClose}/>
-      </div>
-    );
-  }
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-  export default FormDialogButton;
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div style={{float: 'right', marginBottom: '20px'}}>
+      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+        Create Game
+      </Button>
+      <CreateGameDialog open={open} onClose={handleClose} />
+    </div>
+  );
+}
+
+export default FormDialogButton;
