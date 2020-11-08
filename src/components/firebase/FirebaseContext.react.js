@@ -1,4 +1,4 @@
-import React from 'components/firebase/node_modules/react';
+import React from 'react';
 
 const FirebaseContext = React.createContext(null);
 

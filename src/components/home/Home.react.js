@@ -6,7 +6,6 @@ import FormDialogButton from 'components/formDialogButton/FormDialogButton.react
 import RoomsTable from 'components/room/RoomsTable.react';
 import GeneralChat from 'components/generalChat/GeneralChat.react';
 
-import {useState, useEffect} from 'components/home/node_modules/react';
 import useSocketSubscription from 'hooks/useSocketSubscription';
 import useSocketClient from 'hooks/useSocketClient';
 import {Paper, Typography} from '@material-ui/core';

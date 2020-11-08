@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import io from 'socket.io-client';
 import {Paper, ListItem, TextField, ListItemText, Typography} from '@material-ui/core';
-
-const socket = io.connect('http://localhost:5000');
+import SocketContext from 'components/socket/SocketContext.react';
+import useSocketClient from 'hooks/useSocketClient';
 
 function GeneralChat(props) {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
+  const socket = useSocketClient();
 
   useEffect(() => {
     socket.on('chat message', ({username, message}) => {
