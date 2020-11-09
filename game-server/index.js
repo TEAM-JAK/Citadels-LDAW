@@ -10,6 +10,7 @@ const database = new Firestore({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://citadels-ldaw.firebaseio.com',
   },
+  dbPrefix: 'bgio_',
 });
 
 const server = Server({
