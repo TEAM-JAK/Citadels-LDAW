@@ -1,4 +1,3 @@
-import React from 'react';
 import {Client} from 'boardgame.io/react';
 import CitadelsGame from 'game/CitadelsGame';
 import {SocketIO} from 'boardgame.io/multiplayer';
