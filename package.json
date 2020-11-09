@@ -16,6 +16,7 @@
     "bgio-firebase": "^0.3.0",
     "boardgame.io": "^0.41.1",
     "clsx": "^1.1.1",
+    "easy-peasy": "^4.0.1",
     "esm": "^3.2.25",
     "firebase": "^7.20.0",
     "firebase-admin": "^9.3.0",

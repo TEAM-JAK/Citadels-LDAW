@@ -135,7 +135,7 @@ function GameSetUp(ctx) {
 }
 
 const CitadelsGame = {
-  name: 'Citadels-Board-Game',
+  name: 'citadels',
 
   setup: (ctx) => GameSetUp(ctx),
 
