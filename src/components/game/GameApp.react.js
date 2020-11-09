@@ -1,7 +1,7 @@
 import React from "react";
 import { Client } from "boardgame.io/react";
-import CitadelsGame from "./CitadelsGame.react";
-import Board from "./Board.react";
+import CitadelsGame from "game/CitadelsGame";
+import Board from "components/game/Board.react";
 
 const GameApp = Client({
   game: CitadelsGame,

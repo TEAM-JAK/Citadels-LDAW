@@ -1,4 +1,4 @@
-import {getCurrentCharacter, findPlayerWithCharacter, EndTurn} from "./Moves.react";
+import {getCurrentCharacter, findPlayerWithCharacter, EndTurn} from "game/Moves";
 
 export function RemoveSecretFromPlayer (G, ctx, playerID) {
   //return G with out secret from other players.

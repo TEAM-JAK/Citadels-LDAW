@@ -1,10 +1,10 @@
-import { CreateDeckOfDistricts, CreateDeckOfCharacters } from "./Cards.react";
+import { CreateDeckOfDistricts, CreateDeckOfCharacters } from "game/Cards";
 import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
          SetDrawPhase, IsDrawPhaseOver, BeginPlayTurn, SetPlayPhase, IsPlayPhaseOver,
          CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
-         IsGameOver, GameOver} from "./Logic.react";
+         IsGameOver, GameOver} from "game/Logic";
 import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
-         SkipOrEndStage, EndTurn, UseCharacterPower, WarlordPower} from "./Moves.react";
+         SkipOrEndStage, EndTurn, UseCharacterPower, WarlordPower} from "game/Moves";
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
