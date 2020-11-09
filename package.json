@@ -38,7 +38,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "serve": "node -r esm ./game-server/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"

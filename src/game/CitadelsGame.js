@@ -1,10 +1,28 @@
-import { CreateDeckOfDistricts, CreateDeckOfCharacters } from "game/Cards";
-import { GetPlayerOrderDrawPhase, GetPlayerOrderPlayPhase,
-         SetDrawPhase, IsDrawPhaseOver, BeginPlayTurn, SetPlayPhase, IsPlayPhaseOver,
-         CleanPlayPhase, GetCurrentSituation, RemoveSecretFromPlayer,
-         IsGameOver, GameOver} from "game/Logic";
-import { ChooseCharacter, TakeCoin, TakeDistrictCard, BuildDistrict,
-         SkipOrEndStage, EndTurn, UseCharacterPower, WarlordPower} from "game/Moves";
+import {CreateDeckOfDistricts, CreateDeckOfCharacters} from './Cards';
+import {
+  GetPlayerOrderDrawPhase,
+  GetPlayerOrderPlayPhase,
+  SetDrawPhase,
+  IsDrawPhaseOver,
+  BeginPlayTurn,
+  SetPlayPhase,
+  IsPlayPhaseOver,
+  CleanPlayPhase,
+  GetCurrentSituation,
+  RemoveSecretFromPlayer,
+  IsGameOver,
+  GameOver,
+} from './Logic';
+import {
+  ChooseCharacter,
+  TakeCoin,
+  TakeDistrictCard,
+  BuildDistrict,
+  SkipOrEndStage,
+  EndTurn,
+  UseCharacterPower,
+  WarlordPower,
+} from './Moves';
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
@@ -51,7 +69,7 @@ function Shuffle(array) {
 /**
  * Gets the oldest player from the game to assign as King who goes
  * first in the game.
- * @returns {int} index of player. 
+ * @returns {int} index of player.
  */
 function GetOldestPlayer() {
   //TODO
@@ -60,17 +78,17 @@ function GetOldestPlayer() {
 
 /**
  * Initial set up for one player.
- * @returns {any} JSON like set up for player.  
+ * @returns {any} JSON like set up for player.
  */
 function PlayerInitialSetUp() {
   return {
     coins: 2,
     builtCity: [],
-    handCount : 4,
+    handCount: 4,
     chosenCharacter: [],
     powerUsed: false,
     districtBuiltOnTurn: 0,
-  }
+  };
 }
 
 /**
@@ -112,15 +130,14 @@ function GameSetUp(ctx) {
     murderedCharacter,
     muggedCharacter,
     secret,
-    players
-  }
+    players,
+  };
 }
 
-
 const CitadelsGame = {
-  name: "Citadels-Board-Game",
+  name: 'Citadels-Board-Game',
 
-  setup: (ctx) => (GameSetUp(ctx)),
+  setup: (ctx) => GameSetUp(ctx),
 
   //playerView: (G, ctx, playerID) => (RemoveSecretFromPlayer(G, ctx, playerID)), //not sure it works yet.
 
@@ -135,13 +152,13 @@ const CitadelsGame = {
           // This is called at the end of each turn.
           // The phase ends if this returns undefined.
           next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
-          playOrder: (G, ctx) => (GetPlayerOrderDrawPhase(G, ctx)),
+          playOrder: (G, ctx) => GetPlayerOrderDrawPhase(G, ctx),
         },
-        moveLimit : 1,
+        moveLimit: 1,
       },
-      onBegin: (G, ctx) => (SetDrawPhase(G, ctx)), //needs test
+      onBegin: (G, ctx) => SetDrawPhase(G, ctx), //needs test
       moves: {ChooseCharacter},
-      endIf: (G, ctx) => (IsDrawPhaseOver(G, ctx)), 
+      endIf: (G, ctx) => IsDrawPhaseOver(G, ctx),
       next: 'playPhase',
       start: true,
     },
@@ -149,16 +166,16 @@ const CitadelsGame = {
     playPhase: {
       turn: {
         activePlayers: {
-          currentPlayer : {stage: 'takeActionStage'},
+          currentPlayer: {stage: 'takeActionStage'},
           next: {
-            currentPlayer : {stage: 'takeActionStage'},
+            currentPlayer: {stage: 'takeActionStage'},
           },
         },
-        onBegin: (G, ctx) => (BeginPlayTurn(G, ctx)),
+        onBegin: (G, ctx) => BeginPlayTurn(G, ctx),
         order: {
           first: (G, ctx) => 0,
           next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
-          playOrder: (G, ctx) => (GetPlayerOrderPlayPhase(G, ctx)),
+          playOrder: (G, ctx) => GetPlayerOrderPlayPhase(G, ctx),
         },
         stages: {
           takeActionStage: {
@@ -173,22 +190,22 @@ const CitadelsGame = {
           },
         },
       },
-      onBegin: (G, ctx) => (SetPlayPhase(G, ctx)),
-      endIf: (G, ctx) => (IsPlayPhaseOver(G, ctx)),
-      onEnd: (G, ctx) => (CleanPlayPhase(G, ctx)), //needs test
+      onBegin: (G, ctx) => SetPlayPhase(G, ctx),
+      endIf: (G, ctx) => IsPlayPhaseOver(G, ctx),
+      onEnd: (G, ctx) => CleanPlayPhase(G, ctx), //needs test
       next: 'drawPhase',
     },
   },
-  
+
   minPlayers: 2,
   maxPlayers: 7,
 
-  endIf: (G, ctx) => (IsGameOver(G, ctx)),
+  endIf: (G, ctx) => IsGameOver(G, ctx),
 
-  onEnd: (G, ctx) => (GameOver(G, ctx)),
+  onEnd: (G, ctx) => GameOver(G, ctx),
 
   // Disable undo feature for all the moves in the game
   disableUndo: true,
-}
+};
 
 export default CitadelsGame;
