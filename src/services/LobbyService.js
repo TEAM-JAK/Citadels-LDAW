@@ -1,4 +1,5 @@
 import ky from 'ky';
+import {GAME_NAME, BGIO_SERVER_URL} from 'game/config';
 
 // export interface Player {
 //   id: number;
@@ -22,7 +23,7 @@ import ky from 'ky';
 
 export default class LobbyService {
   constructor() {
-    this.api = ky.create({prefixUrl: 'http://localhost:8000/games/citadels'});
+    this.api = ky.create({prefixUrl: `${BGIO_SERVER_URL}/games/${GAME_NAME}`});
   }
 
   async createRoom(numPlayers) {
@@ -38,16 +39,14 @@ export default class LobbyService {
       })
       .json();
 
-    return {
-      playerCredentials,
-    };
+    return playerCredentials;
   }
 
-  async getRoomMetadata(roomID) {
-    return await this.api.get(roomID).json();
+  getRoomMetadata(roomID) {
+    return this.api.get(roomID).json();
   }
 
-  async getRooms() {
-    return await this.api.get().json();
+  getRooms() {
+    return this.api.get().json();
   }
 }

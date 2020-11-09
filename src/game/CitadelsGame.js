@@ -23,6 +23,7 @@ import {
   UseCharacterPower,
   WarlordPower,
 } from './Moves';
+import {GAME_NAME} from './config';
 // G {
 //   pileOfCoins : 30,
 //   deckOfDistricts: [districtCard],
@@ -135,7 +136,7 @@ function GameSetUp(ctx) {
 }
 
 const CitadelsGame = {
-  name: 'citadels',
+  name: GAME_NAME,
 
   setup: (ctx) => GameSetUp(ctx),
 
