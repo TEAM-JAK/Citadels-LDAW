@@ -1,6 +1,7 @@
 import {action, thunk} from 'easy-peasy';
 
 // export interface StoreModel {
+//   rooms: RoomMetadata[];
 //   roomID: string | null;
 //   setRoomID: Action<StoreModel, string>;
 //   createGameRoom: Thunk<StoreModel, number, StoreInjections>;
@@ -22,6 +23,15 @@ export const setInitState = (state) => {
 };
 
 export const store = {
+  rooms: [],
+  setRooms: action((state, payload) => {
+    state.rooms = payload;
+  }),
+  loadRooms: thunk(async (actions, payload, {injections}) => {
+    const rooms = await injections.lobbyApi.getRooms();
+    actions.setRooms(rooms);
+  }),
+
   roomID: null,
   setRoomID: action((state, payload) => {
     state.roomID = payload;

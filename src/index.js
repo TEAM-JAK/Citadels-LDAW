@@ -30,8 +30,8 @@ ReactDOM.render(
     <FirebaseContext.Provider value={new Firebase()}>
       {/* <SocketContext.Provider value={new SocketIOClient()}> */}
       <MuiThemeProvider theme={theme}>
-        {/* <App /> */}
-        <GameApp />
+        <App />
+        {/* <GameApp /> */}
       </MuiThemeProvider>
       {/* </SocketContext.Provider> */}
     </FirebaseContext.Provider>

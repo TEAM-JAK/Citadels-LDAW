@@ -12,8 +12,24 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
+import validator from 'validator';
+import {makeStyles} from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  paper: {
+    minWidth: 768,
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  field: {
+    marginBottom: 16,
+  },
+});
 
 function CreateGameDialog(props) {
+  const classes = useStyles();
   const [isPrivateGame, setIsPrivateGame] = useState(false);
   const [fields, setFields] = useState({
     roomName: '',
@@ -52,50 +68,61 @@ function CreateGameDialog(props) {
       return;
     }
 
-    props.onSubmit({roomName: fields.roomName, numberOfPlayers: fields.numberOfPlayers});
+    props.onSubmit({
+      setupData: {roomName: fields.roomName},
+      numPlayers: fields.numberOfPlayers,
+    });
   };
 
   return (
     <Dialog
+      classes={{paper: classes.paper}}
       open={props.open}
       onClose={props.onClose}
       aria-labelledby="create-game-dialog"
     >
       <DialogTitle id="create-game-dialog">Create a Game</DialogTitle>
       <DialogContent>
-        <TextField
-          label="Room Name"
-          value={fields.roomName}
-          onChange={(e) => setFields({...fields, roomName: e.target.value})}
-          error={fieldErrors.roomName != null}
-          helperText={fieldErrors.roomName}
-        />
-        <FormControl error={fieldErrors.numberOfPlayers != null}>
-          <InputLabel id="create-game-number-players-select-label">
-            Number Of Players
-          </InputLabel>
-          <Select
-            labelId="create-game-number-players-select-label"
-            id="create-game-number-players-select"
-            value={fields.numberOfPlayers}
-            onChange={(e) => setFields({...fields, numberOfPlayers: e.target.value})}
+        <div className={classes.form}>
+          <TextField
+            fullWidth
+            className={classes.field}
+            label="Room Name"
+            value={fields.roomName}
+            onChange={(e) => setFields({...fields, roomName: e.target.value})}
+            error={fieldErrors.roomName != null}
+            helperText={fieldErrors.roomName}
+          />
+          <FormControl
+            className={classes.field}
+            error={fieldErrors.numberOfPlayers != null}
           >
-            <MenuItem value={4}>
-              <em>4</em>
-            </MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={5}>4</MenuItem>
-            <MenuItem value={6}>5</MenuItem>
-            <MenuItem value={7}>6</MenuItem>
-          </Select>
-          {fieldErrors.numberOfPlayers != null ? (
-            <FormHelperText>{fieldErrors.numberOfPlayers}</FormHelperText>
-          ) : null}
-        </FormControl>
+            <InputLabel id="create-game-number-players-select-label">
+              Number Of Players
+            </InputLabel>
+            <Select
+              labelId="create-game-number-players-select-label"
+              id="create-game-number-players-select"
+              value={fields.numberOfPlayers}
+              onChange={(e) => setFields({...fields, numberOfPlayers: e.target.value})}
+            >
+              <MenuItem value={4}>
+                <em>4</em>
+              </MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+            </Select>
+            {fieldErrors.numberOfPlayers != null ? (
+              <FormHelperText>{fieldErrors.numberOfPlayers}</FormHelperText>
+            ) : null}
+          </FormControl>
+        </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.oncClose} color="primary">
+        <Button onClick={props.onClose} color="primary">
           Cancel
         </Button>
         <Button onClick={handleFormOnSubmit} color="primary">
