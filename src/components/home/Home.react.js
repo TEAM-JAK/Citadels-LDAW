@@ -4,7 +4,7 @@ import FirebaseContext from 'components/firebase/FirebaseContext.react';
 
 import FormDialogButton from 'components/formDialogButton/FormDialogButton.react';
 import RoomsTable from 'components/room/RoomsTable.react';
-import GeneralChat from 'components/generalChat/GeneralChat.react';
+import Chat from 'components/chat/Chat.react';
 
 import {useState, useEffect} from 'components/home/node_modules/react';
 import useSocketSubscription from 'hooks/useSocketSubscription';
@@ -27,6 +27,7 @@ function Home() {
 
   const lowerRowStyle = {
     display: 'flex',
+    justifyContent: 'space-between',
     margin: '20px 0',
   };
 
@@ -84,7 +85,9 @@ function Home() {
             <FormDialogButton />
             <RoomsTable />
           </div>
-          <GeneralChat username={userData ? userData.username : ''} />
+          <div style={{width: '400px'}}>
+            <Chat username={userData ? userData.username : ''} />
+          </div>
         </div>
       </div>
     </Paper>

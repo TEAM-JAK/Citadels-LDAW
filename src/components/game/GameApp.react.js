@@ -1,12 +1,12 @@
-import React from "react";
-import { Client } from "boardgame.io/react";
-import CitadelsGame from "./CitadelsGame.react";
-import Board from "./Board.react";
+import {Client} from 'boardgame.io/react';
+import CitadelsGame from './CitadelsGame.react';
+import Board from './Board.react';
 
 const GameApp = Client({
   game: CitadelsGame,
   board: Board,
-  numPlayers: 5
+  numPlayers: 3,
+  debug: false,
 });
 
 export default GameApp;
