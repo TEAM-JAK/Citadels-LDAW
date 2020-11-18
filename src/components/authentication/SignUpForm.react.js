@@ -14,17 +14,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import validate from 'validate.js';
-import {CONSTRAINTS} from 'utils/validator';
-
 import * as ROUTES from 'constants/routes';
-
-const INITIAL_STATE = {
-  username: '',
-  email: '',
-  password: '',
-  confirmationPassword: '',
-};
+import validator from 'validator';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const useStyles = makeStyles({
   root: {
@@ -63,48 +55,81 @@ function SignUpForm() {
   const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmationPassword, setShowConfirmationPassword] = useState(false);
-  const [formState, setFormState] = useState(INITIAL_STATE);
+  const [fields, setFields] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmationPassword: '',
+  });
+  const [fieldErrors, setFieldErrors] = useState({
+    username: null,
+    email: null,
+    password: null,
+    confirmationPassword: null,
+  });
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
-    const {username, email, password, confirmationPassword} = formState;
 
-    const validation = validate(
-      {username, email, password, confirmationPassword},
-      CONSTRAINTS.SIGN_UP,
-    );
+    let errors = {
+      username: null,
+      email: null,
+      password: null,
+      confirmationPassword: null,
+    };
 
-    if (validation) {
-      // TODO: Show validation errors
-      console.log(validation);
+    if (validator.isEmpty(fields.username)) {
+      errors = {...errors, username: 'Must not be empty'};
+    }
+
+    if (!validator.isEmail(fields.email)) {
+      errors = {...errors, email: 'Must be a valid email'};
+    }
+
+    if (!validator.isLength(fields.password, {min: 6})) {
+      errors = {...errors, password: 'Must be at least six characters long'};
+    }
+
+    if (
+      errors.password == null &&
+      !validator.equals(fields.password, fields.confirmationPassword)
+    ) {
+      errors = {...errors, confirmationPassword: 'Passwords must be equal'};
+    }
+
+    setFieldErrors(errors);
+
+    const noNullErrors = Object.keys(errors).reduce((acc, current) => {
+      if (errors[current] == null) {
+        return acc;
+      }
+      acc[current] = errors[current];
+      return acc;
+    }, {});
+
+    if (Object.keys(noNullErrors).length !== 0) {
       return;
     }
 
     setLoading(true);
 
     firebase
-      .doCreateUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(fields.email, fields.password)
       .then((result) =>
         firebase.firestore.collection('Users').doc(result.user.uid).set({
-          username,
-          email,
+          username: fields.username,
+          email: fields.email,
         }),
       )
       .then(() => {
-        setFormState({...INITIAL_STATE});
         setLoading(false);
         history.replace(ROUTES.HOME);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
-        console.log(err);
       });
-  }
-
-  function onChange(event) {
-    setFormState({...formState, [event.target.name]: event.target.value});
   }
 
   return (
@@ -112,32 +137,40 @@ function SignUpForm() {
       <Typography className={classes.title} variant="h3" align="center" gutterBottom>
         Sign Up
       </Typography>
-      <form className={classes.form} onSubmit={onSubmit} noValidate>
+      <form className={classes.form} onSubmit={onSubmit} noValidate method="POST">
         <TextField
           name="username"
           className={classes.field}
-          value={formState.username}
-          onChange={onChange}
+          value={fields.username}
+          onChange={(e) => setFields({...fields, username: e.target.value})}
           label="Username"
           variant="outlined"
+          error={fieldErrors.username != null}
+          helperText={fieldErrors.username}
         />
         <TextField
           type="email"
           name="email"
           className={classes.field}
-          value={formState.email}
-          onChange={onChange}
+          value={fields.email}
+          onChange={(e) => setFields({...fields, email: e.target.value})}
           label="Email"
           variant="outlined"
+          error={fieldErrors.email != null}
+          helperText={fieldErrors.email}
         />
-        <FormControl className={classes.field} variant="outlined">
+        <FormControl
+          className={classes.field}
+          variant="outlined"
+          error={fieldErrors.password != null}
+        >
           <InputLabel htmlFor="sign-up-password">Password</InputLabel>
           <OutlinedInput
             id="sign-up-password"
             name="password"
             type={showPassword ? 'text' : 'password'}
-            value={formState.password}
-            onChange={onChange}
+            value={fields.password}
+            onChange={(e) => setFields({...fields, password: e.target.value})}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -151,8 +184,15 @@ function SignUpForm() {
             }
             labelWidth={70}
           />
+          {fieldErrors.password != null ? (
+            <FormHelperText>{fieldErrors.password}</FormHelperText>
+          ) : null}
         </FormControl>
-        <FormControl className={classes.field} variant="outlined">
+        <FormControl
+          className={classes.field}
+          variant="outlined"
+          error={fieldErrors.confirmationPassword != null}
+        >
           <InputLabel htmlFor="sign-up-confirmation-password">
             Confirm Password
           </InputLabel>
@@ -160,8 +200,10 @@ function SignUpForm() {
             id="sign-up-confirmation-password"
             name="confirmationPassword"
             type={showConfirmationPassword ? 'text' : 'password'}
-            value={formState.confirmationPassword}
-            onChange={onChange}
+            value={fields.confirmationPassword}
+            onChange={(e) =>
+              setFields({...fields, confirmationPassword: e.target.value})
+            }
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -175,6 +217,9 @@ function SignUpForm() {
             }
             labelWidth={135}
           />
+          {fieldErrors.confirmationPassword != null ? (
+            <FormHelperText>{fieldErrors.confirmationPassword}</FormHelperText>
+          ) : null}
         </FormControl>
         <div className={classes.submit}>
           <Button

@@ -1,97 +1,75 @@
-import React from 'react';
-import {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useCallback} from 'react';
+import {Redirect} from 'react-router-dom';
+import {useStoreActions, useStoreState} from 'easy-peasy';
+import Typography from '@material-ui/core/Typography';
+import {makeStyles} from '@material-ui/core/styles';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
+import CreateGameButton from 'components/create_game/CreateGameButton.react';
+import RoomsList from 'components/home/RoomsList.react';
 
-import FormDialogButton from 'components/formDialogButton/FormDialogButton.react';
-import RoomsTable from 'components/room/RoomsTable.react';
-import Chat from 'components/chat/Chat.react';
-
-import {useState, useEffect} from 'components/home/node_modules/react';
-import useSocketSubscription from 'hooks/useSocketSubscription';
-import useSocketClient from 'hooks/useSocketClient';
-import {Paper, Typography} from '@material-ui/core';
-
-function Home() {
-  const containerStyle = {
-    width: '1000px',
-    height: '500px',
-    backgroundColor: 'rgb(238, 238, 238)',
-    padding: '25px',
-    position: 'relative',
-  };
-
-  const upperRowStyle = {
+const useStyles = makeStyles({
+  root: {
+    paddingBottom: 24,
     display: 'flex',
-    margin: '20px 0',
-  };
-
-  const lowerRowStyle = {
+    paddingTop: 16,
+    flexDirection: 'column',
+    paddingRight: 24,
+    paddingLeft: 24,
+  },
+  creation: {
     display: 'flex',
-    justifyContent: 'space-between',
-    margin: '20px 0',
-  };
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+});
 
+export default function Home() {
+  const classes = useStyles();
+  const rooms = useStoreState((s) => s.rooms);
+  const createGameRoom = useStoreActions((s) => s.createGameRoom);
+  const loadRooms = useStoreActions((s) => s.loadRooms);
+  const setRoomID = useStoreActions((s) => s.setRoomID);
+  const roomID = useStoreState((s) => s.roomID);
   const firebase = useContext(FirebaseContext);
+  const [userProfile, setUserProfile] = useState(null);
 
-  const [errors, data] = useSocketSubscription(['TEST']);
-  const socket = useSocketClient();
-  const [userData, setUserData] = useState(null);
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    if (data != null) {
-      setMessages([...messages, data]);
-    }
-  }, [data, setMessages]);
+  const onJoin = useCallback(
+    (matchID) => {
+      setRoomID(matchID);
+    },
+    [setRoomID],
+  );
 
   useEffect(() => {
-    async function fetchUserData() {
-      const userData = await firebase.doGetUserProfile();
-
-      setUserData(userData);
+    async function fetchProfile() {
+      const profile = await firebase.fetchUserProfile();
+      setUserProfile(profile);
     }
-    fetchUserData();
-  }, []);
+    fetchProfile();
+  }, [setUserProfile, firebase]);
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      loadRooms();
+    }, 500);
+
+    return () => clearInterval(intervalID);
+  }, [loadRooms]);
+
+  if (roomID != null) return <Redirect to={`/rooms/${roomID}`} />;
 
   return (
-    <Paper variant="outlined">
-      <div style={containerStyle}>
-        <div style={upperRowStyle}>
-          <div>
-            <Typography variant="h5" gutterBottom>
-              CITADELS
-            </Typography>
-          </div>
-          <div style={{marginLeft: 'auto', marginRight: 0}}>
-            <Typography variant="h5" gutterBottom>
-              Hello there,{' '}
-              <span style={{color: 'green'}}>
-                {userData ? userData.username : 'User'}
-              </span>
-              !
-            </Typography>
-            {/* <button onClick={() => socket.emit('message', 'Hola')}>
-            Send message to ws server
-          </button> */}
-          </div>
-          <ul>
-            {messages.map((message) => (
-              <li key={message.id}>{message.text}</li>
-            ))}
-          </ul>
-        </div>
-        <div style={lowerRowStyle}>
-          <div>
-            <FormDialogButton />
-            <RoomsTable />
-          </div>
-          <div style={{width: '400px'}}>
-            <Chat username={userData ? userData.username : ''} />
-          </div>
-        </div>
+    <main className={classes.root}>
+      <div className={classes.creation}>
+        <Typography variant="h4" gutterBottom>
+          {`Welcome${userProfile ? ` ${userProfile.username}` : ''}!`}
+        </Typography>
+        <CreateGameButton onSubmit={createGameRoom} />
       </div>
-    </Paper>
+      <div>
+        <RoomsList rooms={rooms} onJoin={onJoin} />
+      </div>
+    </main>
   );
 }
-
-export default Home;

@@ -1,6 +1,7 @@
 import React from 'react';
 import {useContext, useState} from 'react';
 import FirebaseContext from 'components/firebase/FirebaseContext.react';
+import {AUTH_ERRORS} from 'utils/Firebase';
 import {useHistory} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
@@ -14,17 +15,11 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import validate from 'validate.js';
-import {CONSTRAINTS} from 'utils/validator';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFacebookF} from '@fortawesome/free-brands-svg-icons';
-
+import validator from 'validator';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import * as ROUTES from 'constants/routes';
-
-const INITIAL_STATE = {
-  email: '',
-  password: '',
-};
 
 const useStyles = makeStyles({
   root: {
@@ -77,7 +72,15 @@ function SignInForm() {
   const firebase = useContext(FirebaseContext);
   const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
-  const [formState, setFormState] = useState(INITIAL_STATE);
+  const [fields, setFields] = useState({
+    email: '',
+    password: '',
+  });
+  const [fieldErrors, setFieldErrors] = useState({
+    email: null,
+    password: null,
+  });
+
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
 
@@ -94,46 +97,61 @@ function SignInForm() {
         });
       })
       .then(() => {
-        setFormState({...INITIAL_STATE});
         history.replace(ROUTES.HOME);
       })
-      .catch((error) => {
+      .catch(() => {
         // TODO: Handle errors
-        console.log(error);
       });
   }
 
   function onSubmit(event) {
     event.preventDefault();
-    const {email, password} = formState;
 
-    const validation = validate({email, password}, CONSTRAINTS.SIGN_IN);
+    let errors = {
+      email: null,
+      password: null,
+    };
 
-    if (validation) {
-      // TODO: Show validation errors
+    if (!validator.isEmail(fields.email)) {
+      errors = {...errors, email: 'Must be a valid email'};
+    }
+
+    if (validator.isEmpty(fields.password)) {
+      errors = {...errors, password: 'Must not be empty'};
+    }
+
+    setFieldErrors(errors);
+
+    const noNullErrors = Object.keys(errors).reduce((acc, current) => {
+      if (errors[current] == null) {
+        return acc;
+      }
+      acc[current] = errors[current];
+      return acc;
+    }, {});
+
+    if (Object.keys(noNullErrors).length !== 0) {
       return;
     }
 
     setLoading(true);
 
     firebase
-      .doSignInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(fields.email, fields.password)
       .then(() => {
-        setFormState({...INITIAL_STATE});
         setLoading(false);
         history.replace(ROUTES.HOME);
       })
       .catch((err) => {
+        console.log(err.code);
+        if (err.code === AUTH_ERRORS.USER_NOT_FOUND) {
+          setFieldErrors({...fieldErrors, email: 'Not found'});
+        } else if (err.code === AUTH_ERRORS.WRONG_PASSWORD) {
+          setFieldErrors({...fieldErrors, password: 'Incorrect password'});
+        }
         setLoading(false);
-        console.log(err);
       });
   }
-
-  function onChange(event) {
-    setFormState({...formState, [event.target.name]: event.target.value});
-  }
-
-  const isInvalid = formState.password === '' || formState.email === '';
 
   return (
     <div className={classes.root}>
@@ -145,25 +163,30 @@ function SignInForm() {
           <FontAwesomeIcon icon={faFacebookF} />
         </button>
       </div>
-      <form noValidate className={classes.form} onSubmit={onSubmit}>
+      <form noValidate className={classes.form} onSubmit={onSubmit} method="POST">
         <TextField
           type="email"
           name="email"
           className={classes.field}
-          value={formState.email}
-          onChange={onChange}
+          value={fields.email}
+          onChange={(e) => setFields({...fields, email: e.target.value})}
           label="Email"
           variant="outlined"
-          id="sign-in-email-text-field"
+          error={fieldErrors.email != null}
+          helperText={fieldErrors.email}
         />
-        <FormControl className={classes.field} variant="outlined">
+        <FormControl
+          className={classes.field}
+          variant="outlined"
+          error={fieldErrors.password != null}
+        >
           <InputLabel htmlFor="sign-in-password">Password</InputLabel>
           <OutlinedInput
             id="sign-in-password"
             name="password"
             type={showPassword ? 'text' : 'password'}
-            value={formState.password}
-            onChange={onChange}
+            value={fields.password}
+            onChange={(e) => setFields({...fields, password: e.target.value})}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -177,6 +200,9 @@ function SignInForm() {
             }
             labelWidth={70}
           />
+          {fieldErrors.password != null ? (
+            <FormHelperText>{fieldErrors.password}</FormHelperText>
+          ) : null}
         </FormControl>
         <div className={classes.submit}>
           <Button

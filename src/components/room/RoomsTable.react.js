@@ -9,7 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import Room from './Room.react';
+import Room from './RoomRow.react';
 import {Box, TablePagination} from '@material-ui/core';
 
 function RoomsTable() {
@@ -18,7 +18,7 @@ function RoomsTable() {
   const [page, setPage] = React.useState(0);
 
   const getRooms = () => {
-    const availabeRooms = firebase.doGetAvailableRooms();
+    const availabeRooms = firebase.fetchAvailableRooms();
     setRooms(availabeRooms);
   };
 
