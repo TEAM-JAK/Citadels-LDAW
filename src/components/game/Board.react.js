@@ -66,6 +66,7 @@ function Board(props) {
     props.moves.WarlordPower(destroy);
   }
 
+  console.log(props)
   return (
     <div>
       <button onClick={ChooseCharacter}>ChooseCharacter</button>
