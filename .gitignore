@@ -98,3 +98,5 @@ cypress/videos/*
 cypress/integration/examples/*
 
 # End of https://www.toptal.com/developers/gitignore/api/cypressio
+
+firebaseServiceAccountKey.json

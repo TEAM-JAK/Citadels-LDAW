@@ -5,7 +5,8 @@ import {Redirect} from 'react-router-dom';
 
 import * as ROUTES from 'constants/routes';
 
-function AuthRenderer({children, fallback}) {
+// Renders the children when there is not a session, the opposite of AuthRenderer
+function NoAuthRenderer({children, fallback}) {
   const firebase = useContext(FirebaseContext);
   // Initial state
   const [state, setState] = useState({loading: true, authenticated: false});
@@ -29,10 +30,10 @@ function AuthRenderer({children, fallback}) {
   }
 
   if (!state.loading && !state.authenticated) {
-    return <Redirect to={ROUTES.AUTHENTICATION} />;
+    return children;
   }
 
-  return children;
+  return <Redirect to={ROUTES.HOME} />;
 }
 
-export default AuthRenderer;
+export default NoAuthRenderer;

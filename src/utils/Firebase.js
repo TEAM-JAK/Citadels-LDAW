@@ -10,8 +10,8 @@ const config = {
   projectId: process.env.REACT_APP_PROJECT_ID,
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: '1:82097961134:web:dd88b4d82a6e50d23a953f',
-  measurementId: 'G-9532JM468P',
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 class Firebase {
@@ -23,18 +23,15 @@ class Firebase {
     this.firestore = app.firestore();
   }
 
-  doCreateUserWithEmailAndPassword = (email, password) => {
-    return this.auth
-      .createUserWithEmailAndPassword(email, password)
-      .catch((error) => console.error('Error: ', error));
-  };
+  createUserWithEmailAndPassword = (email, password) =>
+    this.auth.createUserWithEmailAndPassword(email, password);
 
-  doSignInWithEmailAndPassword = (email, password) =>
+  signInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
-  doSignOut = () => this.auth.signOut();
+  signOut = () => this.auth.signOut();
 
-  doGetUserProfile = async () => {
+  fetchUserProfile = async () => {
     const userData = await this.firestore
       .collection('Users')
       .doc(this.auth.currentUser.uid)
@@ -42,27 +39,18 @@ class Firebase {
     return userData.data();
   };
 
-  doUpdateProfile = (user) => {
+  updateProfile = (user) => {
     return this.firestore
       .collection('Users')
       .doc(this.auth.currentUser.uid)
       .update(user)
       .catch((error) => console.error('Error: ', error));
   };
-
-  doGetAvailableRooms = () => {
-    const rooms = [];
-    this.firestore.collection('Room').onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        rooms.push({...doc.data(), id: doc.id});
-      });
-    });
-    return rooms;
-  };
-
-  //   doPasswordReset = (email) => this.auth.sendPasswordResetEmail(email);
-
-  //   doPasswordUpdate = (password) => this.auth.currentUser.updatePassword(password);
 }
+
+export const AUTH_ERRORS = {
+  WRONG_PASSWORD: 'auth/wrong-password',
+  USER_NOT_FOUND: 'auth/user-not-found',
+};
 
 export default Firebase;
