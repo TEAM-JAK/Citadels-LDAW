@@ -10,7 +10,7 @@ function LobbyPlay() {
 
   return (
     <GameApp
-      gameID={id}
+      matchID={id}
       playerID={String(activeRoomPlayer.playerID)}
       credentials={activeRoomPlayer.credential}
     />
