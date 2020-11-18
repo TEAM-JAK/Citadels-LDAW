@@ -51,7 +51,8 @@ export default function LobbySetup({startGame}) {
   useEffect(() => {
     if (userProfile != null && userProfile.username != null && roomMetadata != null) {
       // find first empty seat ID
-      const emptySeatID = roomMetadata.players.find((p) => !p.name).id;
+      const firstWithoutName = roomMetadata.players.find((p) => !p.name);
+      const emptySeatID = firstWithoutName ? firstWithoutName.id : null;
       const alreadyJoined =
         activeRoomPlayer == null
           ? false
@@ -60,7 +61,7 @@ export default function LobbySetup({startGame}) {
                 p.id === activeRoomPlayer.playerID && p.name === userProfile.username
               );
             }) != null;
-      if (!alreadyJoined && emptySeatID !== undefined && id) {
+      if (!alreadyJoined && emptySeatID != null && id) {
         joinRoom({
           playerID: emptySeatID,
           playerName: userProfile.username,
