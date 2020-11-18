@@ -1,5 +1,10 @@
 import {action, thunk} from 'easy-peasy';
 
+// export interface ActiveRoomPlayer {
+//   playerID: number;
+//   credential: string;
+// }
+
 // export interface StoreModel {
 //   rooms: RoomMetadata[];
 //   roomID: string | null;
@@ -50,17 +55,25 @@ export const store = {
     actions.setRoomMetadata(metadata);
   }),
 
+  loadingJoinRoom: false,
+  setLoadingJoinRoom: action((state, payload) => {
+    state.loadingJoinRoom = payload;
+  }),
   activeRoomPlayer: null,
   setActiveRoomPlayer: action((state, payload) => {
     localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(payload));
     state.activeRoomPlayer = payload;
   }),
-  joinRoom: thunk(async (actions, payload, {injections}) => {
-    const playerCredentials = await injections.lobbyApi.joinRoom(payload);
-    actions.setActiveRoomPlayer({
-      credential: playerCredentials,
-      playerID: payload.playerID,
-    });
+  joinRoom: thunk(async (actions, payload, {injections, getStoreState}) => {
+    if (!getStoreState().loadingJoinRoom) {
+      actions.setLoadingJoinRoom(true);
+      const playerCredentials = await injections.lobbyApi.joinRoom(payload);
+      actions.setLoadingJoinRoom(false);
+      actions.setActiveRoomPlayer({
+        credential: playerCredentials,
+        playerID: payload.playerID,
+      });
+    }
   }),
 
   reset: action(() => initState),

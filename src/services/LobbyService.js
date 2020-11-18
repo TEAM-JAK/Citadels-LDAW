@@ -10,6 +10,8 @@ import {BGIO_SERVER_URL} from 'game/config/client';
 // export interface RoomMetadata {
 //   players: Player[];
 //   matchID: string;
+//   setupData: object;
+//   unlisted: bool;
 // }
 
 // export interface ActiveRoomPlayer {
@@ -51,7 +53,9 @@ export default class LobbyService {
   }
 
   async getRooms() {
-    const data = await this.api.get().json();
+    const data = await fetch(`${BGIO_SERVER_URL}/games/${GAME_NAME}`).then((res) =>
+      res.json(),
+    );
     return data.matches;
   }
 }
