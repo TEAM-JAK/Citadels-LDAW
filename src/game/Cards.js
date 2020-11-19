@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from './CardLayout.react';
+// import Card from './CardLayout.react';
 
 // TODO: implement
 // createDeckOfDistricts() -> returns {array of district cards}, set up random purple cards
@@ -57,12 +57,12 @@ function CreateCharacterCard(order, name) {
 }
 
 function Cards(props) {
-  let cards = [];
-  for (let i = 0; i < props.numberOfCards; i++) {
-    cards.push(
-      <Card key={i} cardFrontImage={'assets/cards/cardfront.png'} isReversed={true} />,
-    );
-  }
+  // let cards = [];
+  // for (let i = 0; i < props.numberOfCards; i++) {
+  //   cards.push(
+  //     <Card key={i} cardFrontImage={'assets/cards/cardfront.png'} isReversed={true} />,
+  //   );
+  // }
 
   return (
     <div
@@ -75,7 +75,7 @@ function Cards(props) {
         transform: 'translateX(-50%)',
       }}
     >
-      {cards}
+      {/* {cards} */}
     </div>
   );
 }
