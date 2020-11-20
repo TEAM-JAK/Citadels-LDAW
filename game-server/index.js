@@ -33,4 +33,4 @@ server.app.use(
 // Serves the React App
 server.app.use(serve(root));
 
-server.run(Number(process.env.PORT || DEFAULT_PORT));
+server.run(Number(process.env.APP_PORT || DEFAULT_PORT));
