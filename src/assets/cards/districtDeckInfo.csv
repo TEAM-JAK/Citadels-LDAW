@@ -1,5 +1,5 @@
 ﻿"//tipos: 0: Yellow, 1:Blue, 2: Green, 3: Red, 4: Purple",,,,
-cantidad,nombre,costo,tipo,
+cantidad,nombre,costo,tipo,link
 3,templo,1,1,
 3,iglesia,2,1,
 3,monasterio,3,1,

@@ -97,6 +97,7 @@ export class CardImpl extends React.Component {
     inDeck: PropTypes.bool,
     data: PropTypes.any,
     deckPosition: PropTypes.number,
+    highlighted: PropTypes.any,
   };
 
   static defaultProps = {

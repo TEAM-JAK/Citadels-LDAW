@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
-import { IsMyTurn } from './Utiliy';
-import { ChooseCharacterDialog } from './Dialogs.react';
+import { IsMyTurn, FindPlayerWithCharacter, CanBuild} from './Utiliy';
+import { ChooseCharacterDialog, UseCharacterPowerDialog, TakeActionDialog, BuildDistricDialog, DestroyDistricDialog } from './Dialogs.react';
 
-function PlayPhaseUI() {
-  const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
+function PlayPhaseUI({props}) {
   const [endStageBtn, setEndStageBtn] = useState(true);
+  const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
+  let devCharacterNumber = 3 
+  
+  //setBuildDistrictBtn(!CanBuild(props.G, props.ctx));
   // if playphase:
   //  render use character power which renders dialog depending on power for intput and get payload
   //  render takeaction btn which shows dialiog to take coin or district and after choosing enable build distric btn and enable end or skip btn and if warlord enable destroy btn
@@ -14,16 +17,45 @@ function PlayPhaseUI() {
   //  if warlord enable destroy btn disabled disolay dialog for warlord.
   return(
     <div>
-      <Button variant="contained" color="primary">
-        UseCharacterPower
-      </Button>
-      <Button variant="contained" color="primary">
-        Take Action
-      </Button>
-      <Button variant="contained" color="primary" disabled={buildDistrictBtn}>
-        Build Distric
-      </Button>
-      <Button variant="contained" color="primary" disabled={endStageBtn}>
+      <UseCharacterPowerDialog
+            characterNumber={devCharacterNumber}
+            //characterNumber={props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order}
+            murderedCharacter={props.G.murderedCharacter}
+            numPlayers={props.ctx.numPlayers}
+            currentPlayer={props.ctx.currentPlayer}
+            hand={props.G.secret[props.ctx.currentPlayer].hand}
+            UseCharacterPower={props.moves.UseCharacterPower}>
+      </UseCharacterPowerDialog>
+      <br></br>
+      <TakeActionDialog
+            pileOfCoins={props.G.pileOfCoins}
+            deckOfDistricts={props.G.deckOfDistricts}
+            setEndStageBtn={setEndStageBtn}
+            setBuildDistrictBtn={setBuildDistrictBtn}
+            TakeCoin={props.moves.TakeCoin}
+            TakeDistrictCard={props.moves.TakeDistrictCard}>
+      </TakeActionDialog>
+      <br></br>
+      <BuildDistricDialog
+            hand={props.G.secret[props.ctx.currentPlayer].hand}
+            coins={props.G.players[props.ctx.currentPlayer].coins}
+            buildDistrictBtn={buildDistrictBtn}
+            setBuildDistrictBtn={setBuildDistrictBtn}
+            BuildDistrict={props.moves.BuildDistrict}>
+      </BuildDistricDialog>
+      <br></br>
+      {props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order === 8
+        ? <DestroyDistricDialog
+            hands={props.G.secret}
+            bishopPlayerID={FindPlayerWithCharacter(props.G.players, props.ctx.numPlayers, 5)}
+            coins={props.G.players[props.ctx.currentPlayer].coins}
+            WarlordPower={props.moves.WarlordPower}
+            EndTurn={props.moves.EndTurn}>
+          </DestroyDistricDialog>
+        : <div></div>
+      }
+      <br></br>
+      <Button variant="outlined" color="primary" onClick={() => {props.moves.SkipOrEndStage(); /* TODO : Clean states? */ }} disabled={endStageBtn}>
         EndStage
       </Button>
     </div>
@@ -123,10 +155,17 @@ function Board(props) {
       );
     } else if (props.ctx.phase === "playPhase" || devPhase === "playPhase") {
       return(
-        <PlayPhaseUI></PlayPhaseUI>
+        <PlayPhaseUI props={props}></PlayPhaseUI>
       );
     }
   }
+
+  if(props.ctx.gameover !== null) {
+    return(
+      <h1>GAME IS OVER WINNERS:...</h1>
+    );
+  }
+
   return (
       <OtherPlayerTurn></OtherPlayerTurn>
   );

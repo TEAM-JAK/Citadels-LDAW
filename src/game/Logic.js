@@ -221,12 +221,10 @@ export function CleanPlayPhase(G, ctx) {
  */
 export function IsGameOver(G, ctx) {
   let gameIsOver = false;
-  for (let i = 0; i < ctx.numPlayers; i++) {
-    // Want to take 7 from modes of game some other time TODO.
-    if (G.players[i].builtCity.length === 7) {
-      gameIsOver = true;
-    }
+  if (G.finishedFirst !== -1 && ctx.phase === "drawPhase") {
+    gameIsOver = true;
   }
+  // might have to calculate here the scores. and send back to ctx.gameover
   return gameIsOver;
 }
 
@@ -249,4 +247,5 @@ export function GameOver(G, ctx) {
   // c) if finished building at least 7 building +2 points
   //    if it was the first +4 points.
   // if tie the player with most gold coins winds.
+  // set
 }
