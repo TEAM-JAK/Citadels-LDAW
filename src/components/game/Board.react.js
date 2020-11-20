@@ -1,9 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from '@material-ui/core';
+import { IsMyTurn } from './Utiliy';
+import { ChooseCharacterDialog } from './Dialogs.react';
+
+function PlayPhaseUI() {
+  const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
+  const [endStageBtn, setEndStageBtn] = useState(true);
+  // if playphase:
+  //  render use character power which renders dialog depending on power for intput and get payload
+  //  render takeaction btn which shows dialiog to take coin or district and after choosing enable build distric btn and enable end or skip btn and if warlord enable destroy btn
+  //  render build distric btn disabled which shows dialog for building district
+  //  render skip or end stage btn disabled
+  //  if warlord enable destroy btn disabled disolay dialog for warlord.
+  return(
+    <div>
+      <Button variant="contained" color="primary">
+        UseCharacterPower
+      </Button>
+      <Button variant="contained" color="primary">
+        Take Action
+      </Button>
+      <Button variant="contained" color="primary" disabled={buildDistrictBtn}>
+        Build Distric
+      </Button>
+      <Button variant="contained" color="primary" disabled={endStageBtn}>
+        EndStage
+      </Button>
+    </div>
+  );
+}
+
+function OtherPlayerTurn() {
+  // returns what is happening.
+  return(
+    <div>
+      <h1>something happening to other player</h1>
+      <h1>TO IMPLEMENT</h1>
+    </div>
+  );
+}
+
 
 function Board(props) {
-  function ChooseCharacter() {
-    props.moves.ChooseCharacter(0,1);
-  }
+  let devTurn = "myTurn"
+  let devPhase = "playPhase" //"playPhase"
 
   function TakeCoin() {
     props.moves.TakeCoin();
@@ -67,21 +107,28 @@ function Board(props) {
   }
 
   console.log(props)
+
+  if(IsMyTurn(props.ctx.currentPlayer, props.ctx.playerID) || devTurn === "myTurn") {
+    if (props.ctx.phase === "drawPhase" || devPhase === "drawPhase") {
+      return (
+        <div>
+          {/* TODO: if two players choose two */}
+          <ChooseCharacterDialog
+            deckOfCharacters={props.G.deckOfCharacters}
+            faceDownCharacterCards={props.G.faceDownCharacterCards}
+            faceUpCharacterCards={props.G.faceUpCharacterCards}
+            ChooseCharacter={props.moves.ChooseCharacter}>
+          </ChooseCharacterDialog>
+        </div>
+      );
+    } else if (props.ctx.phase === "playPhase" || devPhase === "playPhase") {
+      return(
+        <PlayPhaseUI></PlayPhaseUI>
+      );
+    }
+  }
   return (
-    <div>
-      <button onClick={ChooseCharacter}>ChooseCharacter</button>
-      <br></br>
-      <button onClick={TakeCoin}>TakeCoin</button>
-      <button onClick={TakeDistrictCard}>TakeDistrictCard</button>
-      <br></br>
-      <button onClick={BuildDistrict}>BuildDistrict</button>
-      <button onClick={SkipOrEndStage}>SkipOrEndStage</button>
-      <br></br>
-      <button onClick={UseCharacterPower}>UseCharacterPower</button>
-      <br></br>
-      <button onClick={WarlordPower}>UseWarlordPower</button>
-      <button onClick={EndTurn}>EndTurn</button>
-    </div> 
+      <OtherPlayerTurn></OtherPlayerTurn>
   );
 }
 

@@ -158,6 +158,8 @@ export function BuildDistrict(G, ctx, handIndex) {
       G.players[ctx.currentPlayer].builtCity.push(G.secret[ctx.currentPlayer].hand.splice(handIndex,1)[0])
     }
   }
+  // TODO : check if it has 7 districs if yes put first to finish
+   
   // if Warlord(8) setStage('extraStage')
   if(getCurrentCharacter(G, ctx) === 8) {
     ctx.events.setStage('extraStage');
