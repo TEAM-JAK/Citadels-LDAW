@@ -68,30 +68,35 @@ function Board(props) {
   }
 
   console.log(props);
+  console.log(Object.keys(props.G.players).length);
 
   let playerCards = [];
-  for (let index = 0; index < 4; index++) {
-    if (props.ctx.currentPlayer !== index) {
-      // playerCards.push(
-      //   <PlayerCard
-      //     key={index}
-      //     username={props.players.length}
-      //     character={props.players[index].name}
-      //     coins={props.players[index].chosenCharacter}
-      //     cardsInHand={props.players[index].handCount}
-      //     citiesBuilt={props.players[index].districtBuiltOnTurn}
-      //   />,
-      // );
+  for (let index = 0; index < Object.keys(props.G.players).length; index++) {
+    if (props.playerID != index) {
       playerCards.push(
         <PlayerCard
           key={index}
-          username={'owo'}
-          character={'Rey'}
-          coins={155}
-          cardsInHand={4}
-          citiesBuilt={2}
+          username={`Jugador ${index}`}
+          character={
+            props.ctx.currentPlayer == index
+              ? props.G.players[index].chosenCharacter
+              : Array(0)
+          }
+          coins={props.G.players[index].coins}
+          cardsInHand={props.G.players[index].handCount}
+          citiesBuilt={props.G.players[index].builtCity}
         />,
       );
+      // playerCards.push(
+      //   <PlayerCard
+      //     key={index}
+      //     username={'owo'}
+      //     character={'Rey'}
+      //     coins={155}
+      //     cardsInHand={4}
+      //     citiesBuilt={2}
+      //   />,
+      // );
     }
   }
 

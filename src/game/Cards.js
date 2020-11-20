@@ -1,6 +1,3 @@
-import React from 'react';
-// import Card from './CardLayout.react';
-
 // TODO: implement
 // createDeckOfDistricts() -> returns {array of district cards}, set up random purple cards
 // createDeckOfCharacters() -> returns {array of character cards}
@@ -56,28 +53,26 @@ function CreateCharacterCard(order, name) {
   //not sure how to do specialPower which should be a function.
 }
 
-function Cards(props) {
-  // let cards = [];
-  // for (let i = 0; i < props.numberOfCards; i++) {
-  //   cards.push(
-  //     <Card key={i} cardFrontImage={'assets/cards/cardfront.png'} isReversed={true} />,
-  //   );
-  // }
+// export function Cards(props) {
+//   let cards = [];
+//   for (let i = 0; i < 4; i++) {
+//     cards.push(
+//       <Card key={i} cardFrontImage={'assets/cards/cardfront.png'} isReversed={true} />,
+//     );
+//   }
 
-  return (
-    <div
-      style={{
-        width: '600px',
-        display: 'flex',
-        position: 'fixed',
-        left: '50%',
-        bottom: '50px',
-        transform: 'translateX(-50%)',
-      }}
-    >
-      {/* {cards} */}
-    </div>
-  );
-}
-
-export default Cards;
+//   return (
+//     <div
+//       style={{
+//         width: '600px',
+//         display: 'flex',
+//         position: 'fixed',
+//         left: '50%',
+//         bottom: '50px',
+//         transform: 'translateX(-50%)',
+//       }}
+//     >
+//       {cards}
+//     </div>
+//   );
+// }

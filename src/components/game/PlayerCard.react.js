@@ -12,42 +12,52 @@ import {Tooltip} from '@material-ui/core';
 const useStyles = makeStyles({
   root: {
     width: 275,
+    padding: 8,
+    '&:last-child': {
+      paddingBottom: '8 !important',
+    },
   },
 });
 
 function PlayerCard(props) {
   const classes = useStyles();
 
+  console.log('Player Card');
+  console.log(props);
+
+  let citiesBuilt = [];
+  for (let index = 0; index < props.citiesBuilt.length; index++) {
+    citiesBuilt.push(props.citiesBuilt[index].name);
+  }
+
   return (
     <Card
       className={classes.root}
-      style={{margin: '12px 0', backgroundColor: '#7504D1'}}
+      style={{margin: '6px 0 6px 1px', backgroundColor: 'rgba(62, 0, 238, 0.6)'}}
     >
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          {props.username}
+      <Typography variant="subtitle1">{props.username}</Typography>
+      <Typography variant="subtitle1">
+        {props.character.length !== 0 ? props.character[0].name : '???'}
+      </Typography>
+      <div
+        style={{
+          flex: '0 0 20%',
+          display: 'flex',
+          justifyContent: 'space-around',
+        }}
+      >
+        <Typography>
+          <BiDollarCircle /> {props.coins}
         </Typography>
-        <Typography component="h2">{props.character}</Typography>
-        <div
-          style={{
-            flex: '0 0 20%',
-            display: 'flex',
-            justifyContent: 'space-around',
-          }}
-        >
+        <Typography>
+          <GiCardBurn /> {props.cardsInHand}
+        </Typography>
+        <Tooltip title={citiesBuilt.length != 0 ? citiesBuilt : ''} placement="center">
           <Typography>
-            <BiDollarCircle /> {props.coins}
+            <FaCity /> {props.citiesBuilt.length}
           </Typography>
-          <Typography>
-            <GiCardBurn /> {props.cardsInHand}
-          </Typography>
-          <Tooltip title={props.citiesBuilt} placement="center">
-            <Typography>
-              <FaCity /> Cities
-            </Typography>
-          </Tooltip>
-        </div>
-      </CardContent>
+        </Tooltip>
+      </div>
     </Card>
   );
 }
