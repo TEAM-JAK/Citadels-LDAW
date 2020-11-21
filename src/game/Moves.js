@@ -49,6 +49,7 @@ export function getCurrentCharacter(G, ctx) {
   return currentCharater
 }
 
+// Send to Utils
 export function findPlayerWithCharacter(G, ctx, characterOrder) {
   for (let i = 0; i < ctx.numPlayers; i++) {
     if (G.players[i].chosenCharacter.some(e => e.order === characterOrder)){
@@ -157,6 +158,10 @@ export function BuildDistrict(G, ctx, handIndex) {
       G.pileOfCoins = G.pileOfCoins + G.secret[ctx.currentPlayer].hand[handIndex].cost;
       G.players[ctx.currentPlayer].builtCity.push(G.secret[ctx.currentPlayer].hand.splice(handIndex,1)[0])
     }
+  }
+  // check if it has 7 districs if yes put first to finish
+  if(G.players[ctx.currentPlayer].builtCity.length >= 7 && G.finishedFirst === -1) {
+    G.finishedFirst = ctx.currentPlayer
   }
   // if Warlord(8) setStage('extraStage')
   if(getCurrentCharacter(G, ctx) === 8) {

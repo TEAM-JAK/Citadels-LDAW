@@ -56,7 +56,7 @@ import {GAME_NAME} from './config';
 //   }
 // }
 
-/**
+/**git
  * Shuffles the given array using Durstenfeld Shuffle
  * @param {array} array - array to shuffle
  */
