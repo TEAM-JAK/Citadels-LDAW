@@ -180,8 +180,7 @@ function Board(props) {
     );
   }
 
-  if (IsMyTurn(props.ctx.currentPlayer, props.ctx.playerID)) {
-    console.log("MUST ENTER")
+  if (props.ctx.currentPlayer === props.playerID) {
     if (props.ctx.phase === 'drawPhase') {
       return (
         <div style={{display: 'flex'}}>
@@ -239,10 +238,12 @@ function Board(props) {
     }
   }
 
-  if (props.ctx.gameover !== null) {
+  if (props.ctx.gameover) {
     console.log(props.ctx.gameover);
     return <h1>GAME IS OVER WINNERS:...</h1>;
   }
+
+
 
   return (
     <div style={{display: 'flex'}}>

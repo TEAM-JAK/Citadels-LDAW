@@ -561,6 +561,7 @@ function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTu
   }
 
   const handleChange = (event) => {
+    console.log("Handle Change value", event.target.value);
     setPlayerID(event.target.value);
   };
 
@@ -583,7 +584,7 @@ function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTu
           labelId="playerToDestroy"
           id="playerToDestroy-select"
           value={playerID}
-          onChange={() => handleChange}
+          onChange={handleChange}
         >
           {menuItems}
         </Select>
