@@ -59,7 +59,7 @@ function GetCurrentSituation(G, ctx) {
   let currentSituation
   currentSituation = {
     phase: ctx.phase,
-    activePlayer: ctx.activePlayers[0], 
+    activePlayer: ctx.activePlayers[0]??"none", 
   }
   return currentSituation;
 }
