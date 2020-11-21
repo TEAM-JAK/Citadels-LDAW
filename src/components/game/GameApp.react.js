@@ -8,6 +8,7 @@ const GameApp = Client({
   game: CitadelsGame,
   board: Board,
   multiplayer: SocketIO({server: BGIO_SERVER_URL}),
+  debug: true,
 });
 
 export default GameApp;
