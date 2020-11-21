@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Checkbox } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Checkbox, Select, InputLabel, MenuItem } from '@material-ui/core';
 import { Card } from '../bgioComponents/card';
 import UIContext from '../bgioComponents/ui-context';
-import { HashOfString } from './Utiliy';
+import { HashOfString, CanBuild } from './Utiliy';
 
 function ChooseCharacterDialog({deckOfCharacters,faceDownCharacterCards,faceUpCharacterCards, ChooseCharacter}) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -80,7 +80,6 @@ function ChooseCharacterDialog({deckOfCharacters,faceDownCharacterCards,faceUpCh
         Choose Character
       </Button>
       <Dialog open={dialogOpen}
-        onClose={handleClose}
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
         fullWidth={true}
@@ -168,9 +167,8 @@ function ShowHand({hand, setPayload}) {
   );
 }
 
-function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers, hand, currentPlayer, UseCharacterPower}) {
+function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers, hand, currentPlayer, useCharacterBtn, setUseCharacterBtn, UseCharacterPower}) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [useCharacterBtn, setUseCharacterBtn] = useState(false);
   const uicontext = useContext(UIContext);
   const [payload, setPayload] = useState();
   const [checkBox, setCheckBox] = useState(false);
@@ -192,7 +190,6 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
   };
 
   const handleClose = () => {
-    // disable use character power btn
     setDialogOpen(false);
     setUseCharacterBtn(true);
     UseCharacterPower(payload);
@@ -256,18 +253,18 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
         dialogContent.push(
           <div>
             <Checkbox
+              label="Option A"
               checked={checkBox}
               onChange={handleChange}
               name="checkOption"
               color="primary"
-            /> <p>Option A</p>
+            />
             { checkBox 
             ? <ShowPlayers numPlayers={numPlayers} setPayload={setPayload} currentPlayer={currentPlayer}></ShowPlayers>
             : <ShowHand hand={hand} setPayload={setPayload}></ShowHand>
             }
           </div>
         );
-        //payload = {isOptionA: false, changeHandsWith: 4, changeMyHandIndx: [0,2]}
         break;
     }
 
@@ -284,7 +281,6 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
               UseCharacterPower
             </Button>
             <Dialog open={dialogOpen}
-              onClose={handleClose}
               fullWidth={true}
               aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">Use Power</DialogTitle>
@@ -318,8 +314,6 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
     setEndStageBtn(false);
     setTakeActionBtn(true);
     
-    // TODO : ask alf enable build distric btn and enable endStageBtn
-    // also about resets of states each turn
     if (action === "takeCoin") {
       TakeCoin();
     } else if (action === "takeDistrict0") {
@@ -399,7 +393,6 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
         Take Action
       </Button>
       <Dialog open={dialogOpen}
-        onClose={handleClose}
         fullWidth={true}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Choose which action</DialogTitle>
@@ -416,7 +409,7 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
   )
 }
 
-function BuildDistricDialog({hand, coins, buildDistrictBtn, setBuildDistrictBtn, BuildDistrict}) {
+function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistrictBtn, BuildDistrict}) {
   
   const [districtToBuild, setDistrictToBuild] = useState(-1);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -435,8 +428,13 @@ function BuildDistricDialog({hand, coins, buildDistrictBtn, setBuildDistrictBtn,
     }
   }
 
-  const handleClose = () => {
-    
+  const handleClose = (props) => {
+    // if(CanBuild(props.G, props.ctx)){
+    //   setBuildDistrictBtn(false);
+    // } else {
+    //   setBuildDistrictBtn(true);
+    // }
+    setBuildDistrictBtn(true);
     setDialogOpen(false);
     BuildDistrict(districtToBuild);
   }
@@ -464,7 +462,6 @@ function BuildDistricDialog({hand, coins, buildDistrictBtn, setBuildDistrictBtn,
         Build Distric
       </Button>
       <Dialog open={dialogOpen}
-        onClose={handleClose}
         fullWidth={true}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Build District</DialogTitle>
@@ -472,7 +469,7 @@ function BuildDistricDialog({hand, coins, buildDistrictBtn, setBuildDistrictBtn,
           {buildOptions}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={() => handleClose(props)} color="primary">
             Build
           </Button>
         </DialogActions>
@@ -481,10 +478,56 @@ function BuildDistricDialog({hand, coins, buildDistrictBtn, setBuildDistrictBtn,
   )
 }
 
-function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn}) {
-  const [destroyBtn, setDestroyBtn] = useState(true);
+function PlayerHand({hand, coins, setPayLoad, playerID}) {
+  let handCards = [];
 
+  const handleClick = (index) => {
+    setPayLoad({player: playerID, builtCityHandIndx: index});
+  }
+
+  const handleClickNot = (index) => {
+    // TODO: show alert or highlight red
+    console.log("Not sufficient to destroy");
+  }
+
+  for (let index = 0; index < hand.length; index++) {
+    if (hand[index].cost > coins) {
+      const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+      handCards.push(
+        <Card
+          front={image}
+          isFaceUp={true}
+          canHover={true}
+          className='highlight'
+          key= {hand[index].name}
+          onClick={() => handleClickNot(index)}
+        />
+      );
+    } else {
+      const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+      handCards.push(
+        <Card
+          front={image}
+          isFaceUp={true}
+          canHover={true}
+          className='highlight'
+          key= {hand[index].name}
+          onClick={() => handleClick(index)}
+        />
+      );
+    }
+  }
+  
+  return(
+    handCards
+  );
+}
+
+function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn, setEndStageBtn, setBuildDistrictBtn, setTakeActionBtn, setUseCharacterBtn}) {
+  const [destroyBtn, setDestroyBtn] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [payLoad, setPayLoad] = useState({player: -1, builtCityHandIndx: -1})
+  const [playerID, setPlayerID] = useState(0);
   const uicontext = useContext(UIContext);
 
   const handleClickOpen = () => {
@@ -492,15 +535,55 @@ function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTu
   };
 
   const handleClose = () => {
-
     setDestroyBtn(true);
     setDialogOpen(false);
-    WarlordPower({ player: 0, builtCityHandIndx: 0});
+    setEndStageBtn(true);
+    setBuildDistrictBtn(true);
+    setTakeActionBtn(false);
+    setUseCharacterBtn(false);
+    WarlordPower(payLoad);
+  }
+
+  const handleCloseEnd = () => {
+    setDestroyBtn(true);
+    setDialogOpen(false);
+    setEndStageBtn(true);
+    setBuildDistrictBtn(true);
+    setTakeActionBtn(false);
+    setUseCharacterBtn(false);
     EndTurn();
   }
 
-  let DistroyOptions = []
+  const handleChange = (event) => {
+    setPlayerID(event.target.value);
+  };
 
+  let menuItems = []
+
+  for (let index = 0; index < hands.length; index++) {
+    if(index !== bishopPlayerID) {
+      menuItems.push(
+        <MenuItem value={index}>Player {index}</MenuItem>
+      );
+    }
+  }
+
+  let distroyDialogContent = []
+
+  distroyDialogContent.push(
+    <div>
+      <InputLabel id="playerToDestroy">Player Num</InputLabel>
+      <Select
+          labelId="playerToDestroy"
+          id="playerToDestroy-select"
+          value={playerID}
+          onChange={() => handleChange}
+        >
+          {menuItems}
+        </Select>
+        <PlayerHand hand={hands[playerID]} coins={coins} setPayLoad={setPayLoad} playerID={playerID}></PlayerHand>
+    </div>
+  );
   
   
   return (
@@ -509,16 +592,18 @@ function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTu
         Destroy
       </Button>
       <Dialog open={dialogOpen}
-        onClose={handleClose}
         fullWidth={true}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Destroy Distric</DialogTitle>
         <DialogContent>
-          {DistroyOptions}
+          {distroyDialogContent}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Destroy
+          </Button>
+          <Button onClick={handleCloseEnd} color="secondary">
+            End Turn
           </Button>
         </DialogActions>
       </Dialog>
