@@ -1,5 +1,6 @@
 import React from 'react';
 import PlayerCard from './PlayerCard.react';
+import {Card} from '../bgioComponents/card';
 
 function Board(props) {
   function ChooseCharacter() {
@@ -68,7 +69,6 @@ function Board(props) {
   }
 
   console.log(props);
-  console.log(Object.keys(props.G.players).length);
 
   let playerCards = [];
   for (let index = 0; index < Object.keys(props.G.players).length; index++) {
@@ -87,17 +87,29 @@ function Board(props) {
           citiesBuilt={props.G.players[index].builtCity}
         />,
       );
-      // playerCards.push(
-      //   <PlayerCard
-      //     key={index}
-      //     username={'owo'}
-      //     character={'Rey'}
-      //     coins={155}
-      //     cardsInHand={4}
-      //     citiesBuilt={2}
-      //   />,
-      // );
     }
+  }
+
+  let districtsInMyHand = [];
+  for (let index = 0; index < props.G.secret[props.playerID].hand.length; index++) {
+    console.log('Carta ' + index);
+    const image = (
+      <img
+        src={props.G.secret[props.playerID].hand[index].imageURL}
+        alt={props.G.secret[props.playerID].hand[index].name + '-Card-Front'}
+        width="100px"
+        height="140px"
+      />
+    );
+    districtsInMyHand.push(
+      <Card
+        isFaceUp={true}
+        front={image}
+        canHover={true}
+        className="highlight"
+        key={index}
+      />,
+    );
   }
 
   return (
@@ -116,6 +128,23 @@ function Board(props) {
         <br></br>
         <button onClick={WarlordPower}>UseWarlordPower</button>
         <button onClick={EndTurn}>EndTurn</button>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <div
+          style={{
+            width: '600px',
+            display: 'flex',
+            position: 'fixed',
+            left: '50%',
+            bottom: '50px',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          {districtsInMyHand}
+        </div>
       </div>
     </div>
   );
