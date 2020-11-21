@@ -8,8 +8,9 @@ function PlayPhaseUI({props}) {
   const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
   const [takeActionBtn, setTakeActionBtn] = useState(false);
   const [useCharacterBtn, setUseCharacterBtn] = useState(false);
-  //let devCharacterNumber = 3 
-  //setBuildDistrictBtn(!CanBuild(props.G, props.ctx));
+  let devCharacterNumber = 8 
+  
+
   // if playphase:
   //  render use character power which renders dialog depending on power for intput and get payload
   //  render takeaction btn which shows dialiog to take coin or district and after choosing enable build distric btn and enable end or skip btn and if warlord enable destroy btn
@@ -56,7 +57,11 @@ function PlayPhaseUI({props}) {
             bishopPlayerID={FindPlayerWithCharacter(props.G.players, props.ctx.numPlayers, 5)}
             coins={props.G.players[props.ctx.currentPlayer].coins}
             WarlordPower={props.moves.WarlordPower}
-            EndTurn={props.moves.EndTurn}>
+            EndTurn={props.moves.EndTurn}
+            setEndStageBtn={setEndStageBtn}
+            setBuildDistrictBtn={setBuildDistrictBtn}
+            setTakeActionBtn={setTakeActionBtn}
+            setUseCharacterBtn={setUseCharacterBtn}>
           </DestroyDistricDialog>
         : <div></div>
       }

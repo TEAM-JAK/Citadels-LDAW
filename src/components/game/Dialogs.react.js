@@ -429,11 +429,12 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
   }
 
   const handleClose = (props) => {
-    if(CanBuild(props.G, props.ctx)){
-      setBuildDistrictBtn(false);
-    } else {
-      setBuildDistrictBtn(true);
-    }
+    // if(CanBuild(props.G, props.ctx)){
+    //   setBuildDistrictBtn(false);
+    // } else {
+    //   setBuildDistrictBtn(true);
+    // }
+    setBuildDistrictBtn(true);
     setDialogOpen(false);
     BuildDistrict(districtToBuild);
   }
@@ -468,88 +469,8 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
           {buildOptions}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose(props)} color="primary">
+          <Button onClick={() => handleClose(props)} color="primary">
             Build
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
-}
-
-function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn}) {
-  const [destroyBtn, setDestroyBtn] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [payLoad, setPayLoad] = useState({player: -1, builtCityHandIndx: -1})
-  const [playerID, setPlayerID] = useState(0);
-  const uicontext = useContext(UIContext);
-
-  const handleClickOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleClose = () => {
-    setDestroyBtn(true);
-    setDialogOpen(false);
-    WarlordPower(payLoad);
-  }
-
-  const handleCloseEnd = () => {
-    setDestroyBtn(true);
-    setDialogOpen(false);
-    EndTurn();
-  }
-
-  const handleChange = (event) => {
-    setPlayerID(event.target.value);
-  };
-
-  let menuItems = []
-
-  for (let index = 0; index < hands.length; index++) {
-    if(index !== bishopPlayerID) {
-      menuItems.push(
-        <MenuItem value={index}>Player {index}</MenuItem>
-      );
-    }
-  }
-
-  let distroyDialogContent = []
-
-  distroyDialogContent.push(
-    <div>
-      <InputLabel id="playerToDestroy">Player Num</InputLabel>
-      <Select
-          labelId="playerToDestroy"
-          id="playerToDestroy-select"
-          value={playerID}
-          onChange={handleChange}
-        >
-          {menuItems}
-        </Select>
-        <PlayerHand hand={hands[playerID]} coins={coins} setPayLoad={setPayLoad} playerID={playerID}></PlayerHand>
-    </div>
-  );
-  
-  
-  return (
-    <div>
-      <Button variant="outlined" color="primary" disabled={destroyBtn} onClick={handleClickOpen}>
-        Destroy
-      </Button>
-      <Dialog open={dialogOpen}
-        fullWidth={true}
-        aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Destroy Distric</DialogTitle>
-        <DialogContent>
-          {distroyDialogContent}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Destroy
-          </Button>
-          <Button onClick={handleCloseEnd} color="secondary">
-            End Turn
           </Button>
         </DialogActions>
       </Dialog>
@@ -600,6 +521,94 @@ function PlayerHand({hand, coins, setPayLoad, playerID}) {
   return(
     handCards
   );
+}
+
+function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn, setEndStageBtn, setBuildDistrictBtn, setTakeActionBtn, setUseCharacterBtn}) {
+  const [destroyBtn, setDestroyBtn] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [payLoad, setPayLoad] = useState({player: -1, builtCityHandIndx: -1})
+  const [playerID, setPlayerID] = useState(0);
+  const uicontext = useContext(UIContext);
+
+  const handleClickOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDestroyBtn(true);
+    setDialogOpen(false);
+    setEndStageBtn(true);
+    setBuildDistrictBtn(true);
+    setTakeActionBtn(false);
+    setUseCharacterBtn(false);
+    WarlordPower(payLoad);
+  }
+
+  const handleCloseEnd = () => {
+    setDestroyBtn(true);
+    setDialogOpen(false);
+    setEndStageBtn(true);
+    setBuildDistrictBtn(true);
+    setTakeActionBtn(false);
+    setUseCharacterBtn(false);
+    EndTurn();
+  }
+
+  const handleChange = (event) => {
+    setPlayerID(event.target.value);
+  };
+
+  let menuItems = []
+
+  for (let index = 0; index < hands.length; index++) {
+    if(index !== bishopPlayerID) {
+      menuItems.push(
+        <MenuItem value={index}>Player {index}</MenuItem>
+      );
+    }
+  }
+
+  let distroyDialogContent = []
+
+  distroyDialogContent.push(
+    <div>
+      <InputLabel id="playerToDestroy">Player Num</InputLabel>
+      <Select
+          labelId="playerToDestroy"
+          id="playerToDestroy-select"
+          value={playerID}
+          onChange={() => handleChange}
+        >
+          {menuItems}
+        </Select>
+        <PlayerHand hand={hands[playerID]} coins={coins} setPayLoad={setPayLoad} playerID={playerID}></PlayerHand>
+    </div>
+  );
+  
+  
+  return (
+    <div>
+      <Button variant="outlined" color="primary" disabled={destroyBtn} onClick={handleClickOpen}>
+        Destroy
+      </Button>
+      <Dialog open={dialogOpen}
+        fullWidth={true}
+        aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Destroy Distric</DialogTitle>
+        <DialogContent>
+          {distroyDialogContent}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Destroy
+          </Button>
+          <Button onClick={handleCloseEnd} color="secondary">
+            End Turn
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
 }
 
 export { ChooseCharacterDialog, UseCharacterPowerDialog, TakeActionDialog, BuildDistricDialog, DestroyDistricDialog };

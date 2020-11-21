@@ -230,7 +230,7 @@ export function IsGameOver(G, ctx) {
 
 export function GameOver(G, ctx) {
   let scores = {};
-
+  
   // scoring and all other things.
   // a) player point equal to cost of all build districts.
   // b) if it has one distric of each color +3 points
