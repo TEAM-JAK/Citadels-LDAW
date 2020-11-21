@@ -50,4 +50,16 @@ function getCurrentCharacter(G, ctx) {
   return currentCharater
 }
 
-export {IsMyTurn, HashOfString, FindPlayerWithCharacter, CanBuild};
+function GetCurrentSituation(G, ctx) {
+  console.log('Entered GetCurrentSituation');
+  // TODO sets the current situation to all other users.
+  // like, it is your turn, or it is player 0's turn, etc.
+  let currentSituation
+  currentSituation = {
+    phase: ctx.phase,
+    activePlayer: ctx.activePlayers, 
+  }
+  return currentSituation;
+}
+
+export {IsMyTurn, HashOfString, FindPlayerWithCharacter, CanBuild, GetCurrentSituation};

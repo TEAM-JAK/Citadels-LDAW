@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
-import { IsMyTurn, FindPlayerWithCharacter, CanBuild} from './Utiliy';
+import { IsMyTurn, FindPlayerWithCharacter, GetCurrentSituation} from './Utiliy';
 import { ChooseCharacterDialog, UseCharacterPowerDialog, TakeActionDialog, BuildDistricDialog, DestroyDistricDialog } from './Dialogs.react';
 
 function PlayPhaseUI({props}) {
   const [endStageBtn, setEndStageBtn] = useState(true);
   const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
   const [takeActionBtn, setTakeActionBtn] = useState(false);
+  const [useCharacterBtn, setUseCharacterBtn] = useState(false);
   //let devCharacterNumber = 3 
   //setBuildDistrictBtn(!CanBuild(props.G, props.ctx));
   // if playphase:
@@ -24,6 +25,8 @@ function PlayPhaseUI({props}) {
             numPlayers={props.ctx.numPlayers}
             currentPlayer={props.ctx.currentPlayer}
             hand={props.G.secret[props.ctx.currentPlayer].hand}
+            useCharacterBtn={useCharacterBtn}
+            setUseCharacterBtn={setUseCharacterBtn}
             UseCharacterPower={props.moves.UseCharacterPower}>
       </UseCharacterPowerDialog>
       <br></br>
@@ -39,6 +42,7 @@ function PlayPhaseUI({props}) {
       </TakeActionDialog>
       <br></br>
       <BuildDistricDialog
+            props={props}
             hand={props.G.secret[props.ctx.currentPlayer].hand}
             coins={props.G.players[props.ctx.currentPlayer].coins}
             buildDistrictBtn={buildDistrictBtn}
@@ -57,88 +61,29 @@ function PlayPhaseUI({props}) {
         : <div></div>
       }
       <br></br>
-      <Button variant="outlined" color="primary" onClick={() => {props.moves.SkipOrEndStage();setEndStageBtn(true); setBuildDistrictBtn(true); setTakeActionBtn(false)}} disabled={endStageBtn}>
-        EndStage
+      <Button variant="outlined" color="primary" onClick={() => {props.moves.SkipOrEndStage();setEndStageBtn(true); setBuildDistrictBtn(true); setTakeActionBtn(false); setUseCharacterBtn(false)}} disabled={endStageBtn}>
+        End Turn
       </Button>
     </div>
   );
 }
 
-function OtherPlayerTurn() {
+function OtherPlayerTurn({props}) {
+  let situation = GetCurrentSituation(props.G, props.ctx);
   // returns what is happening.
   return(
     <div>
-      <h1>something happening to other player</h1>
-      <h1>TO IMPLEMENT</h1>
+      <h1>Not your turn yet</h1>
+      <h1>We are on: {situation.phase} phase</h1>
+      <h1>{situation.activePlayer} is playing now</h1>
     </div>
   );
 }
 
 
 function Board(props) {
-  let devTurn = ""//"myTurn"
-  let devPhase = ""//"playPhase" //"playPhase"
-
-  function TakeCoin() {
-    props.moves.TakeCoin();
-  }
-
-  function TakeDistrictCard() {
-    props.moves.TakeDistrictCard(true);
-  }
-
-  function BuildDistrict() {
-    props.moves.BuildDistrict(0);
-  }
-
-  function SkipOrEndStage() {
-    props.moves.SkipOrEndStage();
-  }
-
-  function UseCharacterPower() {
-    let payload;
-    switch (props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order) {
-      case 1:
-        // payload: int character order number to murder
-        payload = 5//Math.floor(Math.random() * 8) + 1
-        break;
-      case 2:
-        // payload: int character order number to steal
-        payload = 3//Math.floor(Math.random() * 8) + 1
-        break;
-      case 3:
-        // payload: {isOptionA: true, changeHandsWith: int, changeMyHandIndx: [int]}
-        payload = {isOptionA: false, changeHandsWith: 4, changeMyHandIndx: [0,2]}
-        break;
-      case 4:
-        payload = -1
-        break;
-      case 5:
-        payload = -1
-        break;
-      case 6:
-        payload = -1
-        break;
-      case 7:
-        // No use power, just explanaition
-        break;
-      case 8:
-        payload = -1
-        break;
-      default:
-        break;
-    }
-    props.moves.UseCharacterPower(payload);
-  }
-
-  function EndTurn() {
-    props.moves.EndTurn();
-  }
-
-  function WarlordPower() {
-    let destroy = { player: 0, builtCityHandIndx: 0}
-    props.moves.WarlordPower(destroy);
-  }
+  let devTurn = "myTurn"
+  let devPhase = "playPhase" //"playPhase"
 
   console.log(props)
 
@@ -169,7 +114,7 @@ function Board(props) {
   }
 
   return (
-      <OtherPlayerTurn></OtherPlayerTurn>
+      <OtherPlayerTurn props={props}></OtherPlayerTurn>
   );
 }
 

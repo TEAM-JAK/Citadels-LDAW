@@ -228,6 +228,18 @@ export function IsGameOver(G, ctx) {
   return gameIsOver;
 }
 
+export function GameOver(G, ctx) {
+  let scores = {};
+
+  // scoring and all other things.
+  // a) player point equal to cost of all build districts.
+  // b) if it has one distric of each color +3 points
+  // c) if finished building at least 7 building +2 points
+  //    if it was the first +4 points.
+  // if tie the player with most gold coins winds.
+  // set
+}
+
 export function GetCurrentSituation(G, ctx) {
   console.log('Entered GetCurrentSituation');
   // TODO sets the current situation to all other users.
@@ -238,14 +250,4 @@ export function GetCurrentSituation(G, ctx) {
     activePlayer: ctx.activePlayers, 
   }
   return currentSituation;
-}
-
-export function GameOver(G, ctx) {
-  // scoring and all other things.
-  // a) player point equal to cost of all build districts.
-  // b) if it has one distric of each color +3 points
-  // c) if finished building at least 7 building +2 points
-  //    if it was the first +4 points.
-  // if tie the player with most gold coins winds.
-  // set
 }
