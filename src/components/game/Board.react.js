@@ -16,7 +16,7 @@ function PlayPhaseUI({props}) {
   const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
   const [takeActionBtn, setTakeActionBtn] = useState(false);
   const [useCharacterBtn, setUseCharacterBtn] = useState(false);
-  let devCharacterNumber = 8;
+  let devCharacterNumber = -1;
 
   // if playphase:
   //  render use character power which renders dialog depending on power for intput and get payload
@@ -64,7 +64,7 @@ function PlayPhaseUI({props}) {
         <DestroyDistricDialog
           hands={props.G.secret}
           bishopPlayerID={FindPlayerWithCharacter(
-            props.G.players,
+            props.G,
             props.ctx.numPlayers,
             5,
           )}
@@ -111,8 +111,8 @@ function OtherPlayerTurn({props}) {
 }
 
 function Board(props) {
-  let devTurn = 'myTurn';
-  let devPhase = 'playPhase'; //"playPhase"
+  let devTurn = "";
+  let devPhase = ""; //"playPhase"
 
   console.log(props);
 
@@ -141,7 +141,7 @@ function Board(props) {
     console.log('Carta ' + index);
     const image = (
       <img
-        src={props.G.secret[props.playerID].hand[index].imageURL}
+        src={props.G.secret[props.playerID].hand[index].front}
         alt={props.G.secret[props.playerID].hand[index].name + '-Card-Front'}
         width="100px"
         height="140px"
@@ -158,8 +158,31 @@ function Board(props) {
     );
   }
 
-  if (IsMyTurn(props.ctx.currentPlayer, props.ctx.playerID) || devTurn === 'myTurn') {
-    if (props.ctx.phase === 'drawPhase' || devPhase === 'drawPhase') {
+  let citiesInMyHand = [];
+  for (let index = 0; index < props.G.players[props.playerID].builtCity.length; index++) {
+    console.log('Carta ' + index);
+    const image = (
+      <img
+        src={props.G.players[props.playerID].builtCity[index].front}
+        alt={props.G.players[props.playerID].builtCity[index].name + '-Card-Front'}
+        width="100px"
+        height="140px"
+      />
+    );
+    citiesInMyHand.push(
+      <Card
+        isFaceUp={true}
+        front={image}
+        canHover={true}
+        className="highlight"
+        key={index}
+      />,
+    );
+  }
+
+  if (IsMyTurn(props.ctx.currentPlayer, props.ctx.playerID)) {
+    console.log("MUST ENTER")
+    if (props.ctx.phase === 'drawPhase') {
       return (
         <div style={{display: 'flex'}}>
           <div style={{flex: '0 0 20%'}}>{playerCards}</div>
@@ -170,6 +193,16 @@ function Board(props) {
             faceUpCharacterCards={props.G.faceUpCharacterCards}
             ChooseCharacter={props.moves.ChooseCharacter}
           ></ChooseCharacterDialog>
+          <div>
+            <h1>
+              Built Cities
+            </h1>
+            {citiesInMyHand}
+            <h1>
+              Coins
+            </h1>
+            {props.G.players[props.playerID].coins}
+          </div>
           <div
             style={{
               width: '600px',
@@ -207,6 +240,7 @@ function Board(props) {
   }
 
   if (props.ctx.gameover !== null) {
+    console.log(props.ctx.gameover);
     return <h1>GAME IS OVER WINNERS:...</h1>;
   }
 

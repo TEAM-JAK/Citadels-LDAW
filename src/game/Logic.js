@@ -1,9 +1,9 @@
-import {getCurrentCharacter, findPlayerWithCharacter, EndTurn} from './Moves';
+import { getCurrentCharacter, findPlayerWithCharacter, EndTurn } from './Moves';
 
 export function RemoveSecretFromPlayer(G, ctx, playerID) {
   //return G with out secret from other players.
   //not working locally
-  const newSecrets = {...G.secret};
+  const newSecrets = { ...G.secret };
 
   for (const key in newSecrets) {
     console.log('key: ', key, ' PlayerID: ', playerID);
@@ -12,7 +12,7 @@ export function RemoveSecretFromPlayer(G, ctx, playerID) {
     }
   }
 
-  return {...G, secret: newSecrets};
+  return { ...G, secret: newSecrets };
 }
 
 /**
@@ -132,9 +132,9 @@ export function BeginPlayTurn(G, ctx) {
   if (getCurrentCharacter(G, ctx) === G.murderedCharacter) {
     console.log(
       '<-------Player :' +
-        ctx.currentPlayer +
-        ' was murdered and lost turn with character: ' +
-        getCurrentCharacter(G, ctx),
+      ctx.currentPlayer +
+      ' was murdered and lost turn with character: ' +
+      getCurrentCharacter(G, ctx),
     );
     EndTurn(G, ctx);
     return G;
@@ -166,7 +166,7 @@ export function BeginPlayTurn(G, ctx) {
  * @param {any} ctx - Game context
  */
 export function SetPlayPhase(G, ctx) {
-  let newPlayers = {...G.players};
+  let newPlayers = { ...G.players };
   if (ctx.numPlayers < 4) {
     for (const key in newPlayers) {
       newPlayers[key].chosenCharacter.sort(function (a, b) {
@@ -174,7 +174,7 @@ export function SetPlayPhase(G, ctx) {
       });
     }
   }
-  return {...G, players: newPlayers};
+  return { ...G, players: newPlayers };
 }
 
 export function IsPlayPhaseOver(G, ctx) {
@@ -194,7 +194,7 @@ export function IsPlayPhaseOver(G, ctx) {
 export function CleanPlayPhase(G, ctx) {
   // reset murdered character per play phase.
   G.murderedCharacter = -1;
-  G.muggedCharacter = {muggedFromPlayer: -1, muggedToCharacter: -1};
+  G.muggedCharacter = { muggedFromPlayer: -1, muggedToCharacter: -1 };
 
   for (let i = 0; i < ctx.numPlayers; i++) {
     while (G.players[i].chosenCharacter.length !== 0) {
@@ -230,7 +230,54 @@ export function IsGameOver(G, ctx) {
 
 export function GameOver(G, ctx) {
   let scores = {};
-  
+
+  for (let index = 0; index < G.players.length; index++) {
+    let baseScore = 0;
+    let extra = 0;
+    let allTypes = 0;
+    let hasYellow = false;
+    let hasBlue = false;
+    let hasGreen = false;
+    let hasRed = false;
+    let hasPurple = false;
+
+    if(G.finishedFirst === index) {
+      extra = 4;
+    } else if (G.players[index].builtCity.length > 7){
+      extra = 2;
+    }
+
+    for (let j = 0; j < G.players[index].builtCity.length; j++) {
+      baseScore += G.players[index].builtCity[j].cost
+      switch (G.players[index].builtCity[j].type) {
+        case 0:
+          hasYellow = true;
+          break;
+        case 1:
+          hasBlue = true;
+          break;
+        case 2:
+          hasGreen = true;
+          break;
+        case 3:
+          hasRed = true;
+          break;
+        case 4:
+          hasPurple = true;
+          break;
+        default:
+          break;
+      }
+    }
+
+    if(hasYellow && hasBlue && hasGreen && hasRed || hasPurple){
+      allTypes = 3;
+    }
+    
+    scores[index] = baseScore + extra + allTypes;
+
+    return scores;
+  }
   // scoring and all other things.
   // a) player point equal to cost of all build districts.
   // b) if it has one distric of each color +3 points
@@ -247,7 +294,7 @@ export function GetCurrentSituation(G, ctx) {
   let currentSituation
   currentSituation = {
     phase: ctx.phase,
-    activePlayer: ctx.activePlayers, 
+    activePlayer: ctx.activePlayers,
   }
   return currentSituation;
 }

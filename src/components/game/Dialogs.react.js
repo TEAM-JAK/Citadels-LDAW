@@ -26,7 +26,7 @@ function ChooseCharacterDialog({deckOfCharacters,faceDownCharacterCards,faceUpCh
 
   // Rendering face down cards
   faceDownCharacterCards.forEach(cardElement => {
-    const image = <img src={cardElement.back} alt="Card-Face-Down" />
+    const image = <img width="100px" height="140px" src={cardElement.back} alt="Card-Face-Down" width="100px" height="140px" />
     cardsToChoose.push(
       <Card
         back={image}
@@ -43,7 +43,7 @@ function ChooseCharacterDialog({deckOfCharacters,faceDownCharacterCards,faceUpCh
   // Render face up cards
   faceUpCharacterCards.forEach(cardElement => {
     let keyIndx = 0;
-    const image = <img src={cardElement.front} alt={cardElement.name+"-Card-Front"} />
+    const image = <img width="100px" height="140px" src={cardElement.front} alt={cardElement.name+"-Card-Front"} />
     cardsToChoose.push(
       <Card
         front={image}
@@ -60,7 +60,7 @@ function ChooseCharacterDialog({deckOfCharacters,faceDownCharacterCards,faceUpCh
 
   // Reneder choosable cards
   for (let index = 0; index < deckOfCharacters.length; index++) {
-    const image = <img src={deckOfCharacters[index].front} alt={deckOfCharacters[index].name+"-Card-Front"} />
+    const image = <img width="100px" height="140px" src={deckOfCharacters[index].front} alt={deckOfCharacters[index].name+"-Card-Front"} />
     cardsToChoose.push(
       <Card
         front={image}
@@ -102,7 +102,7 @@ function ShowPlayers({numPlayers, setPayload, currentPlayer}) {
   let players = []
   for (let index = 0; index < numPlayers; index++) {
     if (index == currentPlayer) {
-      const image = <img src={""} alt={"Card-Face-Down"} />
+      const image = <img width="100px" height="140px" src={""} alt={"Card-Face-Down"} />
       players.push(
         <Card
           back={image}
@@ -113,7 +113,7 @@ function ShowPlayers({numPlayers, setPayload, currentPlayer}) {
         />
       );
     } else {
-      const image = <img src={""} alt={"Player "+index} />
+      const image = <img width="100px" height="140px" src={""} alt={"Player "+index} />
       players.push(
         <Card
           front={image}
@@ -149,7 +149,7 @@ function ShowHand({hand, setPayload}) {
   }
 
   for (let index = 0; index < hand.length; index++) {
-    const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+    const image = <img width="100px" height="140px" src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
     handCards.push(
       <Card
         front={image}
@@ -205,7 +205,7 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
     case 1:
       console.log("ENTEred");
         for (let index = 1; index < deck.length; index++) {
-          const image = <img src={deck[index].front} alt={deck[index].name+"-Card-Front"} />
+          const image = <img width="100px" height="140px" src={deck[index].front} alt={deck[index].name+"-Card-Front"} />
           dialogContent.push(
             <Card
               front={image}
@@ -222,7 +222,7 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
       case 2:
         for (let index = 2; index < deck.length; index++) {
           if (index === murderedCharacter) {
-            const image = <img src={deck[index].back} alt={"Card-Face-Down"} />
+            const image = <img width="100px" height="140px" src={deck[index].back} alt={"Card-Face-Down"} />
             dialogContent.push(
               <Card
                 back={image}
@@ -234,7 +234,7 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
               />
             );
           } else {
-            const image = <img src={deck[index].front} alt={deck[index].name+"-Card-Front"} />
+            const image = <img width="100px" height="140px" src={deck[index].front} alt={deck[index].name+"-Card-Front"} />
             dialogContent.push(
               <Card
                 front={image}
@@ -329,7 +329,7 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
   // Adding option for coins
   if (pileOfCoins>2) {
     if(pileOfCoins === 1) {
-      const image = <img src={"https://firebasestorage.googleapis.com/v0/b/citadels-ldaw.appspot.com/o/cards%2Fone_coin.jpg?alt=media&token=5c54886b-6975-440f-84d9-98f372045981"} alt={"One-Coin-Card"} />
+      const image = <img width="100px" height="140px" src={"https://firebasestorage.googleapis.com/v0/b/citadels-ldaw.appspot.com/o/cards%2Fone_coin.jpg?alt=media&token=5c54886b-6975-440f-84d9-98f372045981"} alt={"One-Coin-Card"} />
       takeActionOptions.push(
         <Card
           front={image}
@@ -342,7 +342,7 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
         />
       );
     } else {
-      const image = <img src={"https://firebasestorage.googleapis.com/v0/b/citadels-ldaw.appspot.com/o/cards%2Ftwo_coin.jpg?alt=media&token=71911bbd-817d-44ec-9922-da8af74e91ee"} alt={"Two-Coin-Card"} />
+      const image = <img width="100px" height="140px" src={"https://firebasestorage.googleapis.com/v0/b/citadels-ldaw.appspot.com/o/cards%2Ftwo_coin.jpg?alt=media&token=71911bbd-817d-44ec-9922-da8af74e91ee"} alt={"Two-Coin-Card"} />
       takeActionOptions.push(
         <Card
           front={image}
@@ -360,30 +360,36 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
   // Adding district card options
   if (deckOfDistricts.length > 2) {
     if(deckOfDistricts.length !== 1) {
-      const image = <img src={deckOfDistricts[1].front} alt={deckOfDistricts[1].name+"-Card-Front"} />
+      const image = <img width="100px" height="140px" src={deckOfDistricts[1].front} alt={deckOfDistricts[1].name+"-Card-Front"} />
       takeActionOptions.push(
+        <div>
+          <Card
+            front={image}
+            isFaceUp={true}
+            canHover={true}
+            className='highlight'
+            key= {deckOfDistricts[1].name}
+            onClick={() => {setAction("takeDistrict1")}}
+            context={uicontext}
+          />
+        <div>Elegir {deckOfDistricts[1].name}</div>
+        </div>
+      );
+    }
+    const image = <img  width="100px" height="140px" src={deckOfDistricts[0].front} alt={deckOfDistricts[0].name+"-Card-Front"} />
+    takeActionOptions.push(
+      <div>
         <Card
           front={image}
           isFaceUp={true}
           canHover={true}
           className='highlight'
-          key= {deckOfDistricts[1].name}
-          onClick={() => {setAction("takeDistrict1")}}
+          key= {deckOfDistricts[0].name}
+          onClick={() => {setAction("takeDistrict0")}}
           context={uicontext}
         />
-      );
-    }
-    const image = <img src={deckOfDistricts[0].front} alt={deckOfDistricts[0].name+"-Card-Front"} />
-    takeActionOptions.push(
-      <Card
-        front={image}
-        isFaceUp={true}
-        canHover={true}
-        className='highlight'
-        key= {deckOfDistricts[0].name}
-        onClick={() => {setAction("takeDistrict0")}}
-        context={uicontext}
-      />
+      <div>Elegir {deckOfDistricts[0].name}</div>
+      </div>
     );
   }
 
@@ -429,11 +435,11 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
   }
 
   const handleClose = (props) => {
-    // if(CanBuild(props.G, props.ctx)){
-    //   setBuildDistrictBtn(false);
-    // } else {
-    //   setBuildDistrictBtn(true);
-    // }
+    if(CanBuild(props.G, props.ctx)){
+      setBuildDistrictBtn(false);
+    } else {
+      setBuildDistrictBtn(true);
+    }
     setBuildDistrictBtn(true);
     setDialogOpen(false);
     BuildDistrict(districtToBuild);
@@ -442,7 +448,7 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
   let buildOptions = []
 
   for (let index = 0; index < hand.length; index++) {
-    const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+    const image = <img width="100px" height="140px" src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
     buildOptions.push(
       <Card
         front={image}
@@ -458,7 +464,7 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
 
   return (
     <div>
-      <Button variant="outlined" color="primary" disabled={buildDistrictBtn} onClick={() => handleClickOpen}>
+      <Button variant="outlined" color="primary" disabled={buildDistrictBtn} onClick={handleClickOpen}>
         Build Distric
       </Button>
       <Dialog open={dialogOpen}
@@ -492,7 +498,7 @@ function PlayerHand({hand, coins, setPayLoad, playerID}) {
 
   for (let index = 0; index < hand.length; index++) {
     if (hand[index].cost > coins) {
-      const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+      const image = <img width="100px" height="140px" src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
       handCards.push(
         <Card
           front={image}
@@ -504,7 +510,7 @@ function PlayerHand({hand, coins, setPayLoad, playerID}) {
         />
       );
     } else {
-      const image = <img src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
+      const image = <img width="100px" height="140px" src={hand[index].front} alt={hand[index].name+"-Card-Front"} />
       handCards.push(
         <Card
           front={image}

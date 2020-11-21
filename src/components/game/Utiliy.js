@@ -1,4 +1,6 @@
 function IsMyTurn(currentPlayer, playerID) {
+  console.log(currentPlayer);
+  console.log(playerID);
   let isMyTurn = false;
   if (currentPlayer === playerID) {
     isMyTurn = true;

@@ -150,19 +150,22 @@ function canBuild(G, ctx) {
 export function BuildDistrict(G, ctx, handIndex) {
   console.log("Entered BuildDistrict")
   //Do not allow if it has more than 1, unles is architect.
-  if(canBuild(G, ctx)) {
-    G.players[ctx.currentPlayer].districtBuiltOnTurn = G.players[ctx.currentPlayer].districtBuiltOnTurn + 1;
-    // Check if user has sufficient coins, should be checked before allowing to select that hand.
-    if(G.players[ctx.currentPlayer].coins >= G.secret[ctx.currentPlayer].hand[handIndex].cost) {
-      G.players[ctx.currentPlayer].coins = G.players[ctx.currentPlayer].coins - G.secret[ctx.currentPlayer].hand[handIndex].cost;
-      G.pileOfCoins = G.pileOfCoins + G.secret[ctx.currentPlayer].hand[handIndex].cost;
-      G.players[ctx.currentPlayer].builtCity.push(G.secret[ctx.currentPlayer].hand.splice(handIndex,1)[0])
+  if (handIndex !== -1) {
+    if(canBuild(G, ctx)) {
+      G.players[ctx.currentPlayer].districtBuiltOnTurn = G.players[ctx.currentPlayer].districtBuiltOnTurn + 1;
+      // Check if user has sufficient coins, should be checked before allowing to select that hand.
+      if(G.players[ctx.currentPlayer].coins >= G.secret[ctx.currentPlayer].hand[handIndex].cost) {
+        G.players[ctx.currentPlayer].coins = G.players[ctx.currentPlayer].coins - G.secret[ctx.currentPlayer].hand[handIndex].cost;
+        G.pileOfCoins = G.pileOfCoins + G.secret[ctx.currentPlayer].hand[handIndex].cost;
+        G.players[ctx.currentPlayer].builtCity.push(G.secret[ctx.currentPlayer].hand.splice(handIndex,1)[0])
+      }
+    }
+    // check if it has 7 districs if yes put first to finish
+    if(G.players[ctx.currentPlayer].builtCity.length >= 7 && G.finishedFirst === -1) {
+      G.finishedFirst = ctx.currentPlayer
     }
   }
-  // check if it has 7 districs if yes put first to finish
-  if(G.players[ctx.currentPlayer].builtCity.length >= 7 && G.finishedFirst === -1) {
-    G.finishedFirst = ctx.currentPlayer
-  }
+  
   // if Warlord(8) setStage('extraStage')
   if(getCurrentCharacter(G, ctx) === 8) {
     ctx.events.setStage('extraStage');

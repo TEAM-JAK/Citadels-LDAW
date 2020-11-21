@@ -16,8 +16,10 @@
 
 function districtCardInDeck(quantity, name, cost, type, imageURL) {
   let cards = [];
+  const backSrc =
+    'https://firebasestorage.googleapis.com/v0/b/citadels-ldaw.appspot.com/o/cards%2Fback_orange.jpg?alt=media&token=4a5738af-f9f7-43e4-a3cf-62541b32f283';
   for (let index = 0; index < quantity; index++) {
-    cards.push({name: name, type: type, cost: cost, imageURL: imageURL});
+    cards.push({name: name, type: type, cost: cost, front: imageURL, back: backSrc});
   }
   return cards;
 }
