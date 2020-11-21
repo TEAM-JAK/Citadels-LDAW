@@ -6,8 +6,8 @@ import { ChooseCharacterDialog, UseCharacterPowerDialog, TakeActionDialog, Build
 function PlayPhaseUI({props}) {
   const [endStageBtn, setEndStageBtn] = useState(true);
   const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
-  let devCharacterNumber = 3 
-  
+  const [takeActionBtn, setTakeActionBtn] = useState(false);
+  //let devCharacterNumber = 3 
   //setBuildDistrictBtn(!CanBuild(props.G, props.ctx));
   // if playphase:
   //  render use character power which renders dialog depending on power for intput and get payload
@@ -18,8 +18,8 @@ function PlayPhaseUI({props}) {
   return(
     <div>
       <UseCharacterPowerDialog
-            characterNumber={devCharacterNumber}
-            //characterNumber={props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order}
+            //characterNumber={devCharacterNumber}
+            characterNumber={props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order}
             murderedCharacter={props.G.murderedCharacter}
             numPlayers={props.ctx.numPlayers}
             currentPlayer={props.ctx.currentPlayer}
@@ -32,6 +32,8 @@ function PlayPhaseUI({props}) {
             deckOfDistricts={props.G.deckOfDistricts}
             setEndStageBtn={setEndStageBtn}
             setBuildDistrictBtn={setBuildDistrictBtn}
+            takeActionBtn={takeActionBtn}
+            setTakeActionBtn={setTakeActionBtn}
             TakeCoin={props.moves.TakeCoin}
             TakeDistrictCard={props.moves.TakeDistrictCard}>
       </TakeActionDialog>
@@ -55,7 +57,7 @@ function PlayPhaseUI({props}) {
         : <div></div>
       }
       <br></br>
-      <Button variant="outlined" color="primary" onClick={() => {props.moves.SkipOrEndStage(); /* TODO : Clean states? */ }} disabled={endStageBtn}>
+      <Button variant="outlined" color="primary" onClick={() => {props.moves.SkipOrEndStage();setEndStageBtn(true); setBuildDistrictBtn(true); setTakeActionBtn(false)}} disabled={endStageBtn}>
         EndStage
       </Button>
     </div>
@@ -74,8 +76,8 @@ function OtherPlayerTurn() {
 
 
 function Board(props) {
-  let devTurn = "myTurn"
-  let devPhase = "playPhase" //"playPhase"
+  let devTurn = ""//"myTurn"
+  let devPhase = ""//"playPhase" //"playPhase"
 
   function TakeCoin() {
     props.moves.TakeCoin();

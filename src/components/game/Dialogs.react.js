@@ -137,9 +137,14 @@ function ShowHand({hand, setPayload}) {
   let handCards = [];
   const [selectedCards, setSelectedCards] = useState([]);
 
-  const handleClick = () => {
+  const handleClick = (index) => {
     // TODO : highlight cards
-    setSelectedCards([]);
+    let containIndx = selectedCards.findIndex(element => element === index);
+    if (containIndx !== -1) {
+      setSelectedCards([...selectedCards.slice(0,containIndx), selectedCards.slice(0,containIndx)])
+    } else {
+      setSelectedCards([...selectedCards, index]);
+    }
 
     setPayload({isOptionA: false, changeHandsWith: -1, changeMyHandIndx: selectedCards});
   }
@@ -153,7 +158,7 @@ function ShowHand({hand, setPayload}) {
         canHover={true}
         className='highlight'
         key= {"Player "+index}
-        onClick={() => handleClick()}
+        onClick={() => handleClick(index)}
       />
     );
   }
@@ -189,7 +194,7 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
   const handleClose = () => {
     // disable use character power btn
     setDialogOpen(false);
-    setUseCharacterBtn(false);
+    setUseCharacterBtn(true);
     UseCharacterPower(payload);
   }
 
@@ -298,7 +303,7 @@ function UseCharacterPowerDialog({characterNumber, murderedCharacter, numPlayers
   )
 }
 
-function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuildDistrictBtn, TakeCoin, TakeDistrictCard}) {
+function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuildDistrictBtn, takeActionBtn, setTakeActionBtn,  TakeCoin, TakeDistrictCard}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const uicontext = useContext(UIContext);
   const [action, setAction] = useState("");
@@ -311,6 +316,8 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
     setDialogOpen(false);
     setBuildDistrictBtn(false);
     setEndStageBtn(false);
+    setTakeActionBtn(true);
+    
     // TODO : ask alf enable build distric btn and enable endStageBtn
     // also about resets of states each turn
     if (action === "takeCoin") {
@@ -388,7 +395,7 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button variant="outlined" color="primary" disabled={takeActionBtn} onClick={handleClickOpen}>
         Take Action
       </Button>
       <Dialog open={dialogOpen}
