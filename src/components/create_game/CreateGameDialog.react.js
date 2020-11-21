@@ -106,14 +106,14 @@ function CreateGameDialog(props) {
               value={fields.numberOfPlayers}
               onChange={(e) => setFields({...fields, numberOfPlayers: e.target.value})}
             >
-              <MenuItem value={4}>
+              <MenuItem value="4">
                 <em>4</em>
               </MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={6}>6</MenuItem>
-              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value="2">2</MenuItem>
+              <MenuItem value="3">3</MenuItem>
+              <MenuItem value="5">5</MenuItem>
+              <MenuItem value="6">6</MenuItem>
+              <MenuItem value="7">7</MenuItem>
             </Select>
             {fieldErrors.numberOfPlayers != null ? (
               <FormHelperText>{fieldErrors.numberOfPlayers}</FormHelperText>
