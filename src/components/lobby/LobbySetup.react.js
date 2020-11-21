@@ -69,7 +69,7 @@ export default function LobbySetup({startGame}) {
         });
       }
     }
-  }, [roomMetadata]);
+  }, [roomMetadata, userProfile]);
 
   useEffect(() => {
     if (id) {
