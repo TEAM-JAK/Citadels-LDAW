@@ -28,6 +28,7 @@ export default function Home() {
   const classes = useStyles();
   const rooms = useStoreState((s) => s.rooms);
   const createGameRoom = useStoreActions((s) => s.createGameRoom);
+  const setRooms = useStoreActions((s) => s.setRooms);
   const loadRooms = useStoreActions((s) => s.loadRooms);
   const setRoomID = useStoreActions((s) => s.setRoomID);
   const roomID = useStoreState((s) => s.roomID);
@@ -50,12 +51,19 @@ export default function Home() {
   }, [setUserProfile, firebase]);
 
   useEffect(() => {
-    const intervalID = setInterval(() => {
-      loadRooms();
-    }, 500);
+    // const intervalID = setInterval(() => {
+    //   loadRooms();
+    // }, 500);
 
-    return () => clearInterval(intervalID);
-  }, [loadRooms]);
+    // return () => clearInterval(intervalID);
+    firebase.firestore.collection('bgio_metadata').onSnapshot((snapshot) => {
+      const result = [];
+      snapshot.forEach((doc) => {
+        result.push({...doc.data(), matchID: doc.id});
+      });
+      setRooms(result);
+    });
+  }, [firebase, setRooms]);
 
   if (roomID != null) return <Redirect to={`/rooms/${roomID}`} />;
 

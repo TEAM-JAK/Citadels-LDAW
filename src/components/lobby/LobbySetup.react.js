@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 export default function LobbySetup({startGame}) {
   const {id} = useParams();
   const classes = useStyles();
-  const loadRoomMetadata = useStoreActions((s) => s.loadRoomMetadata);
+  const setRoomMetadata = useStoreActions((s) => s.setRoomMetadata);
   const roomMetadata = useStoreState((s) => s.roomMetadata);
   const firebase = useContext(FirebaseContext);
   const [userProfile, setUserProfile] = useState(null);
@@ -72,12 +72,17 @@ export default function LobbySetup({startGame}) {
   }, [roomMetadata]);
 
   useEffect(() => {
-    const intervalID = setInterval(() => {
-      if (id) loadRoomMetadata(id);
-    }, 500);
-
-    return () => clearInterval(intervalID);
-  }, [loadRoomMetadata, id]);
+    if (id) {
+      firebase.firestore
+        .collection('bgio_metadata')
+        .doc(id)
+        .onSnapshot((doc) => {
+          const data = {...doc.data()};
+          data.players = Object.keys(data.players).map((index) => data.players[index]);
+          setRoomMetadata({...data, matchID: doc.id});
+        });
+    }
+  }, [firebase, setRoomMetadata, id]);
 
   useEffect(() => {
     if (gameRoomFull) {
