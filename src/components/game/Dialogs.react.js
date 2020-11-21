@@ -415,7 +415,7 @@ function TakeActionDialog({pileOfCoins, deckOfDistricts, setEndStageBtn, setBuil
   )
 }
 
-function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistrictBtn, BuildDistrict}) {
+function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistrictBtn, BuildDistrict, setDestroyBtn}) {
   
   const [districtToBuild, setDistrictToBuild] = useState(-1);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -442,6 +442,7 @@ function BuildDistricDialog({props, hand, coins, buildDistrictBtn, setBuildDistr
     }
     setBuildDistrictBtn(true);
     setDialogOpen(false);
+    setDestroyBtn(false);
     BuildDistrict(districtToBuild);
   }
 
@@ -529,8 +530,7 @@ function PlayerHand({hand, coins, setPayLoad, playerID}) {
   );
 }
 
-function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn, setEndStageBtn, setBuildDistrictBtn, setTakeActionBtn, setUseCharacterBtn}) {
-  const [destroyBtn, setDestroyBtn] = useState(true);
+function DestroyDistricDialog({hands, bishopPlayerID, coins, WarlordPower, EndTurn, setEndStageBtn, setBuildDistrictBtn, setTakeActionBtn, setUseCharacterBtn, destroyBtn, setDestroyBtn}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [payLoad, setPayLoad] = useState({player: -1, builtCityHandIndx: -1})
   const [playerID, setPlayerID] = useState(0);

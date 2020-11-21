@@ -14,6 +14,7 @@ import {Card} from '../bgioComponents/card';
 function PlayPhaseUI({props}) {
   const [endStageBtn, setEndStageBtn] = useState(true);
   const [buildDistrictBtn, setBuildDistrictBtn] = useState(true);
+  const [destroyBtn, setDestroyBtn] = useState(true);
   const [takeActionBtn, setTakeActionBtn] = useState(false);
   const [useCharacterBtn, setUseCharacterBtn] = useState(false);
   let devCharacterNumber = -1;
@@ -58,6 +59,7 @@ function PlayPhaseUI({props}) {
         buildDistrictBtn={buildDistrictBtn}
         setBuildDistrictBtn={setBuildDistrictBtn}
         BuildDistrict={props.moves.BuildDistrict}
+        setDestroyBtn={setDestroyBtn}
       ></BuildDistricDialog>
       <br></br>
       {props.G.players[props.ctx.currentPlayer].chosenCharacter[0].order === 8 ? (
@@ -75,6 +77,8 @@ function PlayPhaseUI({props}) {
           setBuildDistrictBtn={setBuildDistrictBtn}
           setTakeActionBtn={setTakeActionBtn}
           setUseCharacterBtn={setUseCharacterBtn}
+          destroyBtn={destroyBtn}
+          setDestroyBtn={setDestroyBtn}
         ></DestroyDistricDialog>
       ) : (
         <div></div>
@@ -89,6 +93,7 @@ function PlayPhaseUI({props}) {
           setBuildDistrictBtn(true);
           setTakeActionBtn(false);
           setUseCharacterBtn(false);
+          setDestroyBtn(false);
         }}
         disabled={endStageBtn}
       >
