@@ -115,6 +115,10 @@ function OtherPlayerTurn({props}) {
   );
 }
 
+function DisplayAlways({props}) {
+  
+}
+
 function Board(props) {
   let devTurn = "";
   let devPhase = ""; //"playPhase"
@@ -185,7 +189,7 @@ function Board(props) {
     );
   }
 
-  if (props.ctx.currentPlayer === props.playerID) {
+  if (IsMyTurn(props.ctx.currentPlayer, props.playerID)) {
     if (props.ctx.phase === 'drawPhase') {
       return (
         <div style={{display: 'flex'}}>

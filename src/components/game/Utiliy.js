@@ -1,6 +1,9 @@
-function IsMyTurn(currentPlayer, playerID) {
-  console.log(currentPlayer);
-  console.log(playerID);
+/**
+ * Utility function that checks weather is your turn
+ * @param {string} currentPlayer - number of player in string form of whom is the turn
+ * @param {string} playerID - player number of who the host is.
+ */
+export function IsMyTurn(currentPlayer, playerID) {
   let isMyTurn = false;
   if (currentPlayer === playerID) {
     isMyTurn = true;
@@ -8,7 +11,11 @@ function IsMyTurn(currentPlayer, playerID) {
   return isMyTurn
 }
 
-function HashOfString(string) {
+/**
+ * Utility funtion that return a hash of any string
+ * @param {string} string 
+ */
+export function HashOfString(string) {
   var hash = 0, i, chr;
     for (i = 0; i < string.length; i++) {
       chr   = string.charCodeAt(i);
@@ -18,7 +25,13 @@ function HashOfString(string) {
     return hash;
 }
 
-function FindPlayerWithCharacter(G, numPlayers, characterOrder) {
+/**
+ * Utility funtion that return the player id who has the character.
+ * @param {any} G - Game state provided by boardGame.io
+ * @param {int} numPlayers
+ * @param {int} characterOrder - character order that is looked upon 
+ */
+export function FindPlayerWithCharacter(G, numPlayers, characterOrder) {
   for (let i = 0; i < numPlayers; i++) {
     if (G.players[i].chosenCharacter.some(e => e.order === characterOrder)){
       return i
@@ -32,9 +45,9 @@ function FindPlayerWithCharacter(G, numPlayers, characterOrder) {
  * @param {G} G - Game state provided by boardGame.io
  * @param {ctx} ctx - ctx states provided by boardGame.io
  */
-function CanBuild(G, ctx) {
+export function CanBuild(G, ctx) {
   let canBuild = false;
-  if(G.players[ctx.currentPlayer].districtBuiltOnTurn === 0 || (G.players[ctx.currentPlayer].districtBuiltOnTurn < 3 && getCurrentCharacter(G, ctx) === 7)){
+  if(G.players[ctx.currentPlayer].districtBuiltOnTurn === 0 || (G.players[ctx.currentPlayer].districtBuiltOnTurn < 3 && GetCurrentCharacter(G, ctx) === 7)){
     canBuild = true;
   }
   return canBuild;
@@ -45,17 +58,20 @@ function CanBuild(G, ctx) {
  * @param {G} G - Game state provided by boardGame.io
  * @param {ctx} ctx - ctx states provided by boardGame.io
  */
-function getCurrentCharacter(G, ctx) {
+export function GetCurrentCharacter(G, ctx) {
   console.log("called getCurrentChar with:" + ctx.currentPlayer)
   let currentCharater = -1;
   currentCharater = G.players[ctx.currentPlayer].chosenCharacter[0].order;
   return currentCharater
 }
 
-function GetCurrentSituation(G, ctx) {
+/**
+ * Utility funtion that return in what phase we are and which is the active player.
+ * @param {G} G - Game state provided by boardGame.io
+ * @param {ctx} ctx - ctx states provided by boardGame.io
+ */
+export function GetCurrentSituation(G, ctx) {
   console.log('Entered GetCurrentSituation', ctx.phase, ctx.activePlayers);
-  // TODO sets the current situation to all other users.
-  // like, it is your turn, or it is player 0's turn, etc.
   let currentSituation
   currentSituation = {
     phase: ctx.phase,
@@ -63,5 +79,3 @@ function GetCurrentSituation(G, ctx) {
   }
   return currentSituation;
 }
-
-export {IsMyTurn, HashOfString, FindPlayerWithCharacter, CanBuild, GetCurrentSituation};

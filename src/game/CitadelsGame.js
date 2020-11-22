@@ -8,7 +8,6 @@ import {
   SetPlayPhase,
   IsPlayPhaseOver,
   CleanPlayPhase,
-  GetCurrentSituation,
   RemoveSecretFromPlayer,
   IsGameOver,
   GameOver,
@@ -135,6 +134,7 @@ function GameSetUp(ctx) {
   };
 }
 
+// Citadels game instance
 const CitadelsGame = {
   name: GAME_NAME,
 

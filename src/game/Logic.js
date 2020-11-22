@@ -1,5 +1,7 @@
-import { getCurrentCharacter, findPlayerWithCharacter, EndTurn } from './Moves';
+import { EndTurn } from './Moves';
+import { GetCurrentCharacter, FindPlayerWithCharacter} from '../components/game/Utiliy';
 
+// TODO : needs testing not used yet.
 export function RemoveSecretFromPlayer(G, ctx, playerID) {
   //return G with out secret from other players.
   //not working locally
@@ -46,7 +48,6 @@ export function GetPlayerOrderDrawPhase(G, ctx) {
  */
 export function GetPlayerOrderPlayPhase(G, ctx) {
   let dict = {};
-  let playerWithCrown = -1;
   for (let i = 0; i < ctx.numPlayers; i++) {
     for (let j = 0; j < G.players[i].chosenCharacter.length; j++) {
       let key = i + j * ctx.numPlayers;
@@ -72,17 +73,15 @@ export function GetPlayerOrderPlayPhase(G, ctx) {
   return playerOrder;
 }
 
+/**
+ * Return a random number between min and max inclusive.
+ * @param {int} min 
+ * @param {int} max 
+ */
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function isKing(G, indx) {
-  let isKing = false;
-  if (G.deckOfCharacters[indx].order === 4) {
-    isKing = true;
-  }
-  return isKing;
-}
 
 /**
  * Intial set up for any number of players to start choosing characters.
@@ -94,13 +93,13 @@ export function SetDrawPhase(G, ctx) {
   G.faceDownCharacterCards.push(G.deckOfCharacters.splice(randomNumber, 1)[0]);
   if (ctx.numPlayers < 6 && ctx.numPlayers > 3) {
     randomNumber = Math.floor(Math.random() * 7);
-    while (isKing(G, randomNumber)) {
+    while (G.deckOfCharacters[randomNumber].order === 4) {
       randomNumber = Math.floor(Math.random() * 7);
     }
     G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber, 1)[0]);
     if (ctx.numPlayers === 4) {
       randomNumber = randomNumber = Math.floor(Math.random() * 6);
-      while (isKing(G, randomNumber)) {
+      while (G.deckOfCharacters[randomNumber].order === 4) {
         randomNumber = Math.floor(Math.random() * 6);
       }
       G.faceUpCharacterCards.push(G.deckOfCharacters.splice(randomNumber, 1)[0]);
@@ -129,23 +128,23 @@ export function BeginPlayTurn(G, ctx) {
     G.playerWithCrown = ctx.currentPlayer;
   }
 
-  if (getCurrentCharacter(G, ctx) === G.murderedCharacter) {
+  if (GetCurrentCharacter(G, ctx) === G.murderedCharacter) {
     console.log(
       '<-------Player :' +
       ctx.currentPlayer +
       ' was murdered and lost turn with character: ' +
-      getCurrentCharacter(G, ctx),
+      GetCurrentCharacter(G, ctx),
     );
     EndTurn(G, ctx);
     return G;
   }
 
-  if (getCurrentCharacter(G, ctx) === G.muggedCharacter.muggedToCharacter) {
+  if (GetCurrentCharacter(G, ctx) === G.muggedCharacter.muggedToCharacter) {
     if (G.muggedCharacter.muggedToCharacter === G.murderedCharacter) {
       console.log('Can not mugg dead people');
     } else {
       console.log('<-------Player :' + ctx.currentPlayer + ' was mugged: ');
-      let muggedPlayer = findPlayerWithCharacter(
+      let muggedPlayer = FindPlayerWithCharacter(
         G,
         ctx,
         G.muggedCharacter.muggedToCharacter,
@@ -177,8 +176,14 @@ export function SetPlayPhase(G, ctx) {
   return { ...G, players: newPlayers };
 }
 
+/**
+ * Function to check weather play phase is over.
+ * @param {any} G - Game State
+ * @param {any} ctx - Game context 
+ */
 export function IsPlayPhaseOver(G, ctx) {
   // Considering that each play turn the character card is returned to deck of character from player who used it.
+  // TODO: think of another way to manage the play turn. Because taking choose character is not proper.
   let deckCount =
     G.deckOfCharacters.length +
     G.faceDownCharacterCards.length +
@@ -228,73 +233,71 @@ export function IsGameOver(G, ctx) {
   return gameIsOver;
 }
 
-export function GameOver(G, ctx) {
-  let scores = {};
-
+/**
+ * Function called to score the game for each player. Scoring:
+ * a) player point equal to cost of all build districts.
+ * b) if it has one distric of each color +3 points
+ * c) if finished building at least 7 building +2 points
+ *    if it was the first +4 points.
+ * @param {any} G - Game State 
+ */
+function GetScores(G) {
+  let scores = {}
   for (let index = 0; index < G.players.length; index++) {
     let baseScore = 0;
     let extra = 0;
     let allTypes = 0;
-    let hasYellow = false;
-    let hasBlue = false;
-    let hasGreen = false;
-    let hasRed = false;
-    let hasPurple = false;
+    let hasAllColors = [false,false,false,false,false]
 
-    if(G.finishedFirst === index) {
-      extra = 4;
-    } else if (G.players[index].builtCity.length > 7){
-      extra = 2;
-    }
-
+    // Checking a)
     for (let j = 0; j < G.players[index].builtCity.length; j++) {
       baseScore += G.players[index].builtCity[j].cost
       switch (G.players[index].builtCity[j].type) {
         case 0:
-          hasYellow = true;
+          hasAllColors[0] = true;
           break;
         case 1:
-          hasBlue = true;
+          hasAllColors[1] = true;
           break;
         case 2:
-          hasGreen = true;
+          hasAllColors[2] = true;
           break;
         case 3:
-          hasRed = true;
+          hasAllColors[3] = true;
           break;
         case 4:
-          hasPurple = true;
+          hasAllColors[4] = true;
           break;
         default:
           break;
       }
     }
 
-    if(hasYellow && hasBlue && hasGreen && hasRed || hasPurple){
+    // Checking b)
+    if(hasAllColors[0] && hasAllColors[1] && hasAllColors[2] && hasAllColors[3] || hasAllColors[4]){
       allTypes = 3;
     }
-    
-    scores[index] = baseScore + extra + allTypes;
 
-    return scores;
+    // Checking c)
+    if(G.finishedFirst === index) {
+      extra = 4;
+    } else if (G.players[index].builtCity.length > 7){
+      extra = 2;
+    }
+
+    scores[index] = baseScore + extra + allTypes;
   }
-  // scoring and all other things.
-  // a) player point equal to cost of all build districts.
-  // b) if it has one distric of each color +3 points
-  // c) if finished building at least 7 building +2 points
-  //    if it was the first +4 points.
-  // if tie the player with most gold coins winds.
-  // set
+
+  return scores;
 }
 
-export function GetCurrentSituation(G, ctx) {
-  console.log('Entered GetCurrentSituation');
-  // TODO sets the current situation to all other users.
-  // like, it is your turn, or it is player 0's turn, etc.
-  let currentSituation
-  currentSituation = {
-    phase: ctx.phase,
-    activePlayer: ctx.activePlayers,
-  }
-  return currentSituation;
+/**
+ * Function called when game is finished.
+ * @param {any} G - Game State
+ * @param {any} ctx - Game context
+ */
+export function GameOver(G, ctx) {
+  let scores = GetScores(G);
+  // TODO : might have to clean, stop timeouts, animations, etc.
+  return scores;
 }

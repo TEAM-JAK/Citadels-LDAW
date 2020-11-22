@@ -1,5 +1,6 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
-// might want to structure later for modes of game TODO
+import { GetCurrentCharacter, CanBuild } from '../components/game/Utiliy';
+// TODO: structure game modes by changing parameters of whcih characters, purple cards, timeouts, etc.
 const gameMode = {
   NUMCHARACTERS : 8,
   MINPLAYERS: 2,
@@ -37,17 +38,6 @@ export function ChooseCharacter(G, ctx, indx1, indx2 = -1) {
   }
 }
 
-/**
- * Utility function to get current character from player. This works given that choosen characters are sorted in setPlayPhase() and after each turn the character is returned to deck of characters.
- * @param {G} G - Game state provided by boardGame.io
- * @param {ctx} ctx - ctx states provided by boardGame.io
- */
-export function getCurrentCharacter(G, ctx) {
-  console.log("called getCurrentChar with:" + ctx.currentPlayer)
-  let currentCharater = -1;
-  currentCharater = G.players[ctx.currentPlayer].chosenCharacter[0].order;
-  return currentCharater
-}
 
 // Send to Utils
 export function findPlayerWithCharacter(G, ctx, characterOrder) {
@@ -69,7 +59,7 @@ export function TakeCoin(G, ctx) {
   // Check if G.pileOfCoins has more thatn 2 coins.
   
   // If it is merchant(6) give one coin extra
-  if(getCurrentCharacter(G, ctx) === 6 && G.pileOfCoins > 1) {
+  if(GetCurrentCharacter(G, ctx) === 6 && G.pileOfCoins > 1) {
     G.players[ctx.currentPlayer].coins = G.players[ctx.currentPlayer].coins + 1;
     G.pileOfCoins = G.pileOfCoins - 1;
   }
@@ -83,7 +73,7 @@ export function TakeCoin(G, ctx) {
   }
 
   // If architect draw 2 district cards and add to hand
-  if(getCurrentCharacter(G, ctx) === 7 && G.deckOfCharacters.length > 2) {
+  if(GetCurrentCharacter(G, ctx) === 7 && G.deckOfCharacters.length > 2) {
     let addCards = G.deckOfDistricts.splice(0,2)
     G.secret[ctx.currentPlayer].hand.push(addCards[0]);
     G.secret[ctx.currentPlayer].hand.push(addCards[1]);
@@ -114,13 +104,13 @@ export function TakeDistrictCard(G, ctx, choseFirstCard) {
   }
 
   // If it is merchant(6) give one coin extra
-  if(getCurrentCharacter(G, ctx) === 6 && G.pileOfCoins > 1) {
+  if(GetCurrentCharacter(G, ctx) === 6 && G.pileOfCoins > 1) {
     G.players[ctx.currentPlayer].coins = G.players[ctx.currentPlayer].coins + 1;
     G.pileOfCoins = G.pileOfCoins - 1;
   }
 
   // If architect draw 2 district cards and add to hand
-  if(getCurrentCharacter(G, ctx) === 7 && G.deckOfCharacters.length > 2) {
+  if(GetCurrentCharacter(G, ctx) === 7 && G.deckOfCharacters.length > 2) {
     G.secret[ctx.currentPlayer].hand.push(G.deckOfDistricts.shift());
     G.secret[ctx.currentPlayer].hand.push(G.deckOfDistricts.shift());
   }
@@ -128,18 +118,6 @@ export function TakeDistrictCard(G, ctx, choseFirstCard) {
   ctx.events.endStage();
 }
 
-/**
- * Utility function check weather the player still can build.
- * @param {G} G - Game state provided by boardGame.io
- * @param {ctx} ctx - ctx states provided by boardGame.io
- */
-function canBuild(G, ctx) {
-  let canBuild = false;
-  if(G.players[ctx.currentPlayer].districtBuiltOnTurn === 0 || (G.players[ctx.currentPlayer].districtBuiltOnTurn < 3 && getCurrentCharacter(G, ctx) === 7)){
-    canBuild = true;
-  }
-  return canBuild;
-}
 
 /**
  * Function to call when building a district card.
@@ -151,7 +129,7 @@ export function BuildDistrict(G, ctx, handIndex) {
   console.log("Entered BuildDistrict")
   //Do not allow if it has more than 1, unles is architect.
   if (handIndex !== -1) {
-    if(canBuild(G, ctx)) {
+    if(CanBuild(G, ctx)) {
       G.players[ctx.currentPlayer].districtBuiltOnTurn = G.players[ctx.currentPlayer].districtBuiltOnTurn + 1;
       // Check if user has sufficient coins, should be checked before allowing to select that hand.
       if(G.players[ctx.currentPlayer].coins >= G.secret[ctx.currentPlayer].hand[handIndex].cost) {
@@ -167,7 +145,7 @@ export function BuildDistrict(G, ctx, handIndex) {
   }
   
   // if Warlord(8) setStage('extraStage')
-  if(getCurrentCharacter(G, ctx) === 8) {
+  if(GetCurrentCharacter(G, ctx) === 8) {
     ctx.events.setStage('extraStage');
   }
 }
@@ -183,7 +161,7 @@ export function SkipOrEndStage(G, ctx) {
   G.players[ctx.currentPlayer].districtBuiltOnTurn = 0;
 
   // if Warlord(8) setStage('extraStage')
-  if(getCurrentCharacter(G, ctx) === 8) {
+  if(GetCurrentCharacter(G, ctx) === 8) {
     ctx.events.setStage('extraStage');
   } else {
     // move user lowest character to characterdeck
@@ -332,7 +310,7 @@ export function UseCharacterPower(G, ctx, payload) {
   // Thief can not anounce assasin and assasin target.
   if (!G.players[ctx.currentPlayer].powerUsed) {
     G.players[ctx.currentPlayer].powerUsed = true;
-    switch (getCurrentCharacter(G,ctx)) {
+    switch (GetCurrentCharacter(G,ctx)) {
       case 1:
         // payload: int character order number to murder
         assasinPower(G, ctx, payload)
