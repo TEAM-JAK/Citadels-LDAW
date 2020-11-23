@@ -10,6 +10,7 @@ import {
 } from './Dialogs.react';
 import PlayerCard from './PlayerCard.react';
 import {Card} from '../bgioComponents/card';
+import {BiDollarCircle} from 'react-icons/bi';
 
 function PlayPhaseUI({props}) {
   const [endStageBtn, setEndStageBtn] = useState(true);
@@ -103,32 +104,13 @@ function PlayPhaseUI({props}) {
   );
 }
 
-function OtherPlayerTurn({props}) {
-  let situation = GetCurrentSituation(props.G, props.ctx);
-  // returns what is happening.
-  return (
-    <div>
-      <h1>Not your turn yet</h1>
-      <h1>We are on: {situation.phase} phase</h1>
-      <h1>{situation.activePlayer} is playing now</h1>
-    </div>
-  );
-}
 
 function DisplayAlways({props}) {
-  
-}
-
-function Board(props) {
-  let devTurn = "";
-  let devPhase = ""; //"playPhase"
-
-  console.log(props);
-
-  let playerCards = [];
+  console.log("LIne 109", props);
+  let playerCardInfo = [];
   for (let index = 0; index < Object.keys(props.G.players).length; index++) {
     if (props.playerID != index) {
-      playerCards.push(
+      playerCardInfo.push(
         <PlayerCard
           key={index}
           username={`Jugador ${index}`}
@@ -167,7 +149,7 @@ function Board(props) {
     );
   }
 
-  let citiesInMyHand = [];
+  let builtCities = [];
   for (let index = 0; index < props.G.players[props.playerID].builtCity.length; index++) {
     console.log('Carta ' + index);
     const image = (
@@ -178,7 +160,7 @@ function Board(props) {
         height="140px"
       />
     );
-    citiesInMyHand.push(
+    builtCities.push(
       <Card
         isFaceUp={true}
         front={image}
@@ -189,61 +171,72 @@ function Board(props) {
     );
   }
 
+  let situation = GetCurrentSituation(props.G, props.ctx);
+  // returns what is happening.
+  let situationReneder = []
+  situationReneder.push(
+    <div>
+      <h1>We are on: {situation.phase} phase</h1>
+      <h1>{situation.activePlayer} is playing now</h1>
+    </div>
+  )
+
+  return(
+    <div>
+      {situationReneder}
+      <div style={{display: 'flex'}}>
+        <div style={{flex: '0 0 20%'}}>{playerCardInfo}</div>
+      </div>
+      <div
+        style={{
+          width: '600px',
+          display: 'flex',
+          position: 'fixed',
+          left: '50%',
+          bottom: '200px',
+          transform: 'translateX(-50%)',
+          backgroundColor: 'rgb(218, 220, 224, 0.8)',
+        }}
+      >
+        {builtCities}
+        <div>
+          <BiDollarCircle /> {props.G.players[props.playerID].coins}
+        </div>
+      </div>
+      <div
+        style={{
+          width: '600px',
+          display: 'flex',
+          position: 'fixed',
+          left: '50%',
+          bottom: '50px',
+          transform: 'translateX(-50%)'
+        }}
+      >
+        {districtsInMyHand}
+      </div>
+    </div>
+  );
+}
+
+function Board(props) {
+  console.log("Props:123:Board", props);
+  let conditionalRender = [];
+
   if (IsMyTurn(props.ctx.currentPlayer, props.playerID)) {
     if (props.ctx.phase === 'drawPhase') {
-      return (
-        <div style={{display: 'flex'}}>
-          <div style={{flex: '0 0 20%'}}>{playerCards}</div>
-          {/* TODO: if two players choose two */}
-          <ChooseCharacterDialog
-            deckOfCharacters={props.G.deckOfCharacters}
-            faceDownCharacterCards={props.G.faceDownCharacterCards}
-            faceUpCharacterCards={props.G.faceUpCharacterCards}
-            ChooseCharacter={props.moves.ChooseCharacter}
-          ></ChooseCharacterDialog>
-          <div>
-            <h1>
-              Built Cities
-            </h1>
-            {citiesInMyHand}
-            <h1>
-              Coins
-            </h1>
-            {props.G.players[props.playerID].coins}
-          </div>
-          <div
-            style={{
-              width: '600px',
-              display: 'flex',
-              position: 'fixed',
-              left: '50%',
-              bottom: '50px',
-              transform: 'translateX(-50%)',
-            }}
-          >
-            {districtsInMyHand}
-          </div>
-        </div>
-      );
-    } else if (props.ctx.phase === 'playPhase' || devPhase === 'playPhase') {
-      return (
-        <div style={{display: 'flex'}}>
-          <div style={{flex: '0 0 20%'}}>{playerCards}</div>
-          <PlayPhaseUI props={props} />
-          <div
-            style={{
-              width: '600px',
-              display: 'flex',
-              position: 'fixed',
-              left: '50%',
-              bottom: '50px',
-              transform: 'translateX(-50%)',
-            }}
-          >
-            {districtsInMyHand}
-          </div>
-        </div>
-      );
+      conditionalRender.push(
+        <ChooseCharacterDialog
+          deckOfCharacters={props.G.deckOfCharacters}
+          faceDownCharacterCards={props.G.faceDownCharacterCards}
+          faceUpCharacterCards={props.G.faceUpCharacterCards}
+          ChooseCharacter={props.moves.ChooseCharacter}
+        />
+      )
+    } else if (props.ctx.phase === 'playPhase') {
+      conditionalRender.push(
+        <PlayPhaseUI props={props} />
+      )
     }
   }
 
@@ -252,24 +245,10 @@ function Board(props) {
     return <h1>GAME IS OVER WINNERS:...</h1>;
   }
 
-
-
   return (
-    <div style={{display: 'flex'}}>
-      <div style={{flex: '0 0 20%'}}>{playerCards}</div>
-      <OtherPlayerTurn props={props}></OtherPlayerTurn>
-      <div
-        style={{
-          width: '600px',
-          display: 'flex',
-          position: 'fixed',
-          left: '50%',
-          bottom: '50px',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        {districtsInMyHand}
-      </div>
+    <div>
+      {conditionalRender}
+      <DisplayAlways props={props}/>
     </div>
   );
 }
